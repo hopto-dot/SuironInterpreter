@@ -5,8 +5,12 @@ namespace SuironInterpreter
 {
     internal class Program
     {
+        static bool hadError = false;
+
         static void Main(string[] args)
         {
+            // args = [];
+            
             if (args.Length > 1)
             {
                 Console.WriteLine("Usage: SuironInterpreter [script]");
@@ -18,6 +22,7 @@ namespace SuironInterpreter
             }
             else
             {
+                Console.WriteLine("Starting interactive prompt...");
                 runPrompt();
             }
         }
@@ -26,6 +31,11 @@ namespace SuironInterpreter
         {
             String sourceText = File.ReadAllText(path);
             Run(sourceText);
+
+            if (hadError)
+            {
+                return; // error 65
+            }
         }
 
         private static void Run(String source)
@@ -39,9 +49,36 @@ namespace SuironInterpreter
             }
         }
 
+        static void error(int line, String message)
+        {
+            report(line, "", message);
+        }
+
+        private static void report(int line, String where, String message)
+        {
+            Console.WriteLine("[line " + line + "] Error" + where + ": " + message);
+
+            hadError = true;
+        }
+
         private static void runPrompt()
         {
+            while (true)
+            {
+                Console.Write("> ");
+                String userInput = Console.ReadLine();
 
+                if (userInput == String.Empty)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine($"Got `{userInput}`");
+                    Run(userInput);
+                    hadError = false;
+                }
+            }
         }
     }
 }
