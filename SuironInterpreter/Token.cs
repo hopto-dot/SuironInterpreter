@@ -19,7 +19,7 @@ namespace SuironInterpreter
 
             Type = type; // TokenType enum value - for example LEFT_PAREN, SEMICOLON or STRING
             Lexeme = lexeme; // The actual token text from the source code
-            Literal = literal;  // The parsed value (for strings, numbers, etc.)
+            Literal = literal;  // The parsed value as opposed to text form (for strings, numbers, etc.)
             Line = line; // Line no code where token appears
         }
 

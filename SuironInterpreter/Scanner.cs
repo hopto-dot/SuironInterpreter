@@ -21,7 +21,7 @@ namespace SuironInterpreter
         {
             while (!isAtEnd())
             {
-                // We are at the beginning of the next lexeme.
+                // We are at the beginning of the next lexeme
                 start = current;
                 scanToken();
             }
@@ -37,8 +37,42 @@ namespace SuironInterpreter
 
         private void scanToken()
         {
-            // This will be implemented in the next step
-            throw new NotImplementedException();
+            char c = advance();
+            switch (c)
+            {
+                // these tokens don't have an associated value that needs to be stored
+                // so we call addToken without the `literal` arg
+
+                case '(': addToken(TokenType.LEFT_PAREN); break;
+                case ')': addToken(TokenType.RIGHT_PAREN); break;
+                case '{': addToken(TokenType.LEFT_BRACE); break;
+                case '}': addToken(TokenType.RIGHT_BRACE); break;
+                case ',': addToken(TokenType.COMMA); break;
+                case '.': addToken(TokenType.DOT); break;
+                case '-': addToken(TokenType.MINUS); break;
+                case '+': addToken(TokenType.PLUS); break;
+                case ';': addToken(TokenType.SEMICOLON); break;
+                case '*': addToken(TokenType.STAR); break;
+                default:
+                    Program.error(line, $"Unexpected character: `{c}`");
+                    break;
+            }
+        }
+
+        private char advance() // consume the next character in the source file and returns it - for input
+        {
+            current++;
+            return source[current - 1];
+        }
+        private void addToken(TokenType type) // grab the text of the current lexeme and creates a new token for it - for output
+        {
+            addToken(type, null);
+        }
+
+        private void addToken(TokenType type, object literal)
+        {
+            string text = source.Substring(start, current - start);
+            tokens.Add(new Token(type, text, literal, line));
         }
     }
 }
