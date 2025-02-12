@@ -47,6 +47,11 @@ namespace SuironInterpreter
             {
                 Console.WriteLine(token);
             }
+
+            if (hadError)
+            {
+                throw new System.Exception("Lexing error.");
+            }
         }
 
         public static void error(int line, String message)
@@ -56,8 +61,8 @@ namespace SuironInterpreter
 
         private static void report(int line, String where, String message)
         {
-            Console.WriteLine("[line " + line + "] Error" + where + ": " + message);
-
+            // Console.WriteLine("[line " + line + "] Error" + where + ": " + message);
+            Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);
             hadError = true;
         }
 
