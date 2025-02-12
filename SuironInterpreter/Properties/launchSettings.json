@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SuironInterpreter": {
+      "commandName": "Project",
+      "commandLineArgs": "\"test.suiron\""
+    }
+  }
+}
