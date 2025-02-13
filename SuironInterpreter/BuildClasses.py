@@ -135,3 +135,13 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# The python code generation script, generates lots of classes that inherit from Expr (these classes are all types/subclasses of the Expression class).
+
+# It also defines a "Visitor" interface which requires a "Visit_classname" method for each of the Expression subclasses, each taking a parameter of the subclass to be evaluation.
+# The purpose of each of the Visit functions is it evaluate each type of expression.
+
+# All Expression subclasses must implement an "Accept" function which points to the correct visit function in the visitor class.
+
+# In use (code interpretation), instances of expressions will exist, and when they need to be evaluated, you run the Accept function on them,
+# which runs (points to the correct) evaluate function in the visitor class.
