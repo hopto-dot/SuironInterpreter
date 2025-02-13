@@ -11,11 +11,26 @@ def to_camel_case(name: str) -> str:
     return name[0].lower() + name[1:]
 
 def escape_keyword(name: str) -> str:
-    # List of C# keywords that need escaping
     keywords = ["operator"]
     if name.lower() in keywords:
         return "@" + name
     return name
+
+def define_visitor(writer: str, base_name: str, types: List[str]) -> str:
+    output = []
+    # Define visitor interface
+    output.append(f"        public interface IVisitor<R>")
+    output.append("        {")
+
+    # Add visit method for each type
+    for type_def in types:
+        type_name = type_def.split(":")[0].strip()
+        type_name = to_pascal_case(type_name)
+        output.append(f"            R Visit{type_name}{base_name}({type_name} {to_camel_case(base_name)});")
+
+    output.append("        }")
+    output.append("")
+    return "\n".join(output)
 
 def define_type(writer: str, base_name: str, class_name: str, field_list: str) -> str:
     output = []
@@ -31,9 +46,7 @@ def define_type(writer: str, base_name: str, class_name: str, field_list: str) -
     constructor_params = []
     for field in fields:
         type_name, field_name = field.split(" ")
-        # Keep the parameter names in camelCase and escape keywords
         param_name = escape_keyword(to_camel_case(field_name))
-        # Keep the field names in PascalCase
         field_name = to_pascal_case(field_name)
         constructor_params.append(f"{type_name} {param_name}")
 
@@ -51,11 +64,18 @@ def define_type(writer: str, base_name: str, class_name: str, field_list: str) -
     output.append("            }")
     output.append("")
 
-    # Fields - using PascalCase
+    # Fields
     for field in fields:
         type_name, field_name = field.split(" ")
         field_name = to_pascal_case(field_name)
         output.append(f"            public readonly {type_name} {field_name};")
+
+    # Visitor pattern implementation
+    output.append("")
+    output.append("            public override R Accept<R>(IVisitor<R> visitor)")
+    output.append("            {")
+    output.append(f"                return visitor.Visit{class_name}{base_name}(this);")
+    output.append("            }")
 
     output.append("        }")
     output.append("")
@@ -73,6 +93,14 @@ def define_ast(output_dir: str, base_name: str, types: List[str]) -> None:
     output.append("{")
     output.append(f"    public abstract class {base_name}")
     output.append("    {")
+
+    # Add the visitor interface
+    visitor_interface = define_visitor("", base_name, types)
+    output.append(visitor_interface)
+
+    # Add the base accept method
+    output.append("        public abstract R Accept<R>(IVisitor<R> visitor);")
+    output.append("")
 
     # AST classes
     for type_def in types:

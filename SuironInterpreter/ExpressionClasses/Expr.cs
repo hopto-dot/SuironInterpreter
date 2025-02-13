@@ -5,6 +5,16 @@ namespace SuironInterpreter
 {
     public abstract class Expr
     {
+        public interface IVisitor<R>
+        {
+            R VisitBinaryExpr(Binary expr);
+            R VisitGroupingExpr(Grouping expr);
+            R VisitLiteralExpr(Literal expr);
+            R VisitUnaryExpr(Unary expr);
+        }
+
+        public abstract R Accept<R>(IVisitor<R> visitor);
+
         public class Binary : Expr
         {
             public Binary(Expr left, Token @operator, Expr right)
@@ -17,6 +27,11 @@ namespace SuironInterpreter
             public readonly Expr Left;
             public readonly Token Operator;
             public readonly Expr Right;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitBinaryExpr(this);
+            }
         }
 
         public class Grouping : Expr
@@ -27,6 +42,11 @@ namespace SuironInterpreter
             }
 
             public readonly Expr Expression;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitGroupingExpr(this);
+            }
         }
 
         public class Literal : Expr
@@ -37,6 +57,11 @@ namespace SuironInterpreter
             }
 
             public readonly object Value;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitLiteralExpr(this);
+            }
         }
 
         public class Unary : Expr
@@ -49,6 +74,11 @@ namespace SuironInterpreter
 
             public readonly Token Operator;
             public readonly Expr Right;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitUnaryExpr(this);
+            }
         }
 
     }
