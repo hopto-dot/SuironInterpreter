@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using SuironInterpreter.ExpressionClasses;
+using System.IO;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 
 namespace SuironInterpreter
@@ -11,6 +13,8 @@ namespace SuironInterpreter
         {
             // args = [];
             
+            
+            
             if (args.Length > 1)
             {
                 Console.WriteLine("Usage: SuironInterpreter [script]");
@@ -22,6 +26,20 @@ namespace SuironInterpreter
             }
             else
             {
+                //Expr expression = new Expr.Binary(
+                //                                new Expr.Unary(
+                //                                            new Token(TokenType.MINUS, "-", null, 1),
+                //                                            new Expr.Literal(123)
+                //                                              ),
+
+                //                                new Token(TokenType.STAR, "*", null, 1),
+
+                //                                new Expr.Grouping(
+                //                                                 new Expr.Literal(45.67))
+                //                                );
+
+                //Console.WriteLine(new AstPrinter().Print(expression));
+
                 Console.WriteLine("Entering interactive prompt...");
                 runPrompt();
             }
@@ -40,23 +58,49 @@ namespace SuironInterpreter
 
         private static void Run(String source)
         {
+            //Scanner scanner = new Scanner(source);
+            //List<Token> tokens = scanner.scanTokens();
+
+            //foreach (Token token in tokens) 
+            //{
+            //    Console.WriteLine(token);
+            //}
+
+            //if (hadError)
+            //{
+            //    throw new System.Exception("Lexing error.");
+            //}
+
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.scanTokens();
 
-            foreach (Token token in tokens) 
-            {
-                Console.WriteLine(token);
-            }
+            Parser parser = new Parser(tokens);
+            Expr expression = parser.parse();
 
+            // Stop if there was a syntax error.
             if (hadError)
             {
-                throw new System.Exception("Lexing error.");
+                return;
             }
+
+            Console.WriteLine(new AstPrinter().Print(expression));
         }
 
-        public static void error(int line, String message, String where = "")
+        public static void error(int line, String message)
         {
-            report(line, where, message);
+            report(line, "", message);
+        }
+
+        public static void error(Token token, string message)
+        {
+            if (token.Type == TokenType.EOF)
+            {
+                report(token.Line, " at end", message);
+            }
+            else
+            {
+                report(token.Line, $" at '{token.Lexeme}'", message);
+            }
         }
 
         private static void report(int line, String where, String message)
@@ -64,7 +108,7 @@ namespace SuironInterpreter
             // Console.WriteLine("[line " + line + "] Error" + where + ": " + message);
             // Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine($"Error [line {line}]: {message}");
+            Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);
             Console.ForegroundColor = ConsoleColor.White;
             hadError = true;
         }
