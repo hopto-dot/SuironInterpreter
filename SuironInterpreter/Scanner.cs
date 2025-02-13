@@ -79,7 +79,8 @@ namespace SuironInterpreter
                 case '+': addToken(TokenType.PLUS); break;
                 case ';': addToken(TokenType.SEMICOLON); break;
                 case '*': addToken(TokenType.STAR); break;
-                
+                case '&': addToken(TokenType.AMPERSAND); break;
+
                 case 'は': addToken(TokenType.BANG); break;
 
                 case '!': addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break; // if !, and if = then "!=" else "!"

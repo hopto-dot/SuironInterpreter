@@ -8,6 +8,9 @@ namespace SuironInterpreter
     internal class Program
     {
         static bool hadError = false;
+        static bool hadRuntimeError = false;
+
+        private static readonly Interpreter interpreter = new Interpreter();
 
         static void Main(string[] args)
         {
@@ -83,7 +86,15 @@ namespace SuironInterpreter
                 return;
             }
 
-            Console.WriteLine(new AstPrinter().Print(expression));
+            AstPrinter printer = new AstPrinter();
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"Evaluating '{printer.Print(expression)}'");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            interpreter.interpret(expression);
+
+            // object value = interpreter.evaluate(expression);
         }
 
         public static void error(int line, String message)
@@ -113,11 +124,20 @@ namespace SuironInterpreter
             hadError = true;
         }
 
+        public static void RuntimeError(RuntimeErrorException error)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            // Console.WriteLine(error.Message + "\n[line " + error.Token.Line + "]");
+            Console.Error.WriteLine($"Runtime error at '{error.Token.Lexeme}': {error.Message}");
+            Console.ForegroundColor = ConsoleColor.White;
+            hadRuntimeError = true;
+        }
+
         private static void runPrompt()
         {
             while (true)
             {
-                Console.Write("〉");
+                Console.Write("〉 ");
                 String userInput = Console.ReadLine();
                 if (userInput == "exit" || userInput == String.Empty)
                 {
@@ -131,5 +151,7 @@ namespace SuironInterpreter
                 }
             }
         }
+
+
     }
 }

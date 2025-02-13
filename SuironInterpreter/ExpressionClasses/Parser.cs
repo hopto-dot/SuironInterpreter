@@ -88,7 +88,7 @@ namespace SuironInterpreter.ExpressionClasses
         {
             Expr expr = factor();
 
-            while (match(TokenType.MINUS, TokenType.PLUS))
+            while (match(TokenType.MINUS, TokenType.PLUS, TokenType.AMPERSAND))
             {
                 Token @operator = previous();
                 Expr right = factor();
