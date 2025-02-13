@@ -22,7 +22,7 @@ namespace SuironInterpreter
             }
             else
             {
-                Console.WriteLine("Starting interactive prompt...");
+                Console.WriteLine("Entering interactive prompt...");
                 runPrompt();
             }
         }
@@ -43,7 +43,7 @@ namespace SuironInterpreter
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.scanTokens();
 
-            foreach (Token token in tokens)
+            foreach (Token token in tokens) 
             {
                 Console.WriteLine(token);
             }
@@ -54,15 +54,18 @@ namespace SuironInterpreter
             }
         }
 
-        public static void error(int line, String message)
+        public static void error(int line, String message, String where = "")
         {
-            report(line, "", message);
+            report(line, where, message);
         }
 
         private static void report(int line, String where, String message)
         {
             // Console.WriteLine("[line " + line + "] Error" + where + ": " + message);
-            Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);
+            // Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Error.WriteLine($"Error [line {line}]: {message}");
+            Console.ForegroundColor = ConsoleColor.White;
             hadError = true;
         }
 
@@ -70,16 +73,15 @@ namespace SuironInterpreter
         {
             while (true)
             {
-                Console.Write("> ");
+                Console.Write("〉");
                 String userInput = Console.ReadLine();
-
-                if (userInput == String.Empty)
+                if (userInput == "exit" || userInput == String.Empty)
                 {
                     break;
                 }
+
                 else
                 {
-                    Console.WriteLine($"Got `{userInput}`");
                     Run(userInput);
                     hadError = false;
                 }
