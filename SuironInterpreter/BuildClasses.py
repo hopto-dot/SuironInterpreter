@@ -3,30 +3,58 @@ import os
 import sys
 from typing import List
 
+def to_pascal_case(name: str) -> str:
+    return name.strip().title()
+
+def to_camel_case(name: str) -> str:
+    name = name.strip()
+    return name[0].lower() + name[1:]
+
+def escape_keyword(name: str) -> str:
+    # List of C# keywords that need escaping
+    keywords = ["operator"]
+    if name.lower() in keywords:
+        return "@" + name
+    return name
+
 def define_type(writer: str, base_name: str, class_name: str, field_list: str) -> str:
     output = []
+    # Class name should be PascalCase
+    class_name = to_pascal_case(class_name)
+    
     # Start class definition
     output.append(f"        public class {class_name} : {base_name}")
     output.append("        {")
 
+    # Process fields for constructor
+    fields = field_list.split(", ")
+    constructor_params = []
+    for field in fields:
+        type_name, field_name = field.split(" ")
+        # Keep the parameter names in camelCase and escape keywords
+        param_name = escape_keyword(to_camel_case(field_name))
+        # Keep the field names in PascalCase
+        field_name = to_pascal_case(field_name)
+        constructor_params.append(f"{type_name} {param_name}")
+
     # Constructor
-    output.append(f"            public {class_name}({field_list})")
+    output.append(f"            public {class_name}({', '.join(constructor_params)})")
     output.append("            {")
 
     # Store parameters in fields
-    fields = field_list.split(", ")
     for field in fields:
-        name = field.split(" ")[1]
-        # Convert parameter name to camelCase for the constructor parameter
-        param_name = name[0].lower() + name[1:]
-        output.append(f"                {name} = {param_name};")
+        type_name, field_name = field.split(" ")
+        param_name = escape_keyword(to_camel_case(field_name))
+        field_name = to_pascal_case(field_name)
+        output.append(f"                {field_name} = {param_name};")
 
     output.append("            }")
     output.append("")
 
-    # Fields
+    # Fields - using PascalCase
     for field in fields:
         type_name, field_name = field.split(" ")
+        field_name = to_pascal_case(field_name)
         output.append(f"            public readonly {type_name} {field_name};")
 
     output.append("        }")
