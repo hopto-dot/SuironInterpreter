@@ -22,7 +22,7 @@ namespace SuironInterpreter
                 { "and", TokenType.AND }, // と
                 { "class", TokenType.CLASS }, // クラス
                 { "else", TokenType.ELSE }, // 違えば
-                { "false", TokenType.FALSE }, // 否
+                { "False", TokenType.FALSE }, // 否
                 { "for", TokenType.FOR }, // の
                 { "fun", TokenType.FUN }, // 関数
                 { "if", TokenType.IF }, // もし
@@ -32,7 +32,7 @@ namespace SuironInterpreter
                 { "return", TokenType.RETURN }, // 返す
                 { "super", TokenType.SUPER }, // 親
                 { "this", TokenType.THIS }, // この
-                { "true", TokenType.TRUE }, // 肯
+                { "True", TokenType.TRUE }, // 肯
                 { "var", TokenType.VAR }, // は
                 { "while", TokenType.WHILE } // 間
             };
@@ -228,6 +228,12 @@ namespace SuironInterpreter
             return (c >= 'a' && c <= 'z') ||
                    (c >= 'A' && c <= 'Z') ||
                     c == '_';
+        }
+
+        private bool isJP(char c)
+        {
+            List<string> allowedCharacters = new List<string> { "真", "偽" };
+            return allowedCharacters.Contains(c.ToString());
         }
 
         private bool isAlphaNumeric(char c)

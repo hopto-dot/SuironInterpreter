@@ -119,7 +119,8 @@ namespace SuironInterpreter
             // Console.WriteLine("[line " + line + "] Error" + where + ": " + message);
             // Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);
+            // Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);
+            Console.Error.WriteLine($"Parsing error{where} [line {line}]: {message}");
             Console.ForegroundColor = ConsoleColor.White;
             hadError = true;
         }

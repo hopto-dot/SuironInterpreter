@@ -116,7 +116,15 @@ namespace SuironInterpreter
                     {
                         return (string)left + (string)right;
                     }
-                    break;
+                    else if (left is string && right is Double)
+                    {
+                        return (string)left + right.ToString();
+                    }
+                    else if (left is Double && right is string)
+                    {
+                        return left.ToString() + (string)right;
+                    }
+                        break;
                 case TokenType.SLASH:
                     checkNumberOperands(expr.Operator, left, right);
                     return (double)left / (double)right;
