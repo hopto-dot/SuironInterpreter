@@ -19,27 +19,48 @@ namespace SuironInterpreter
         {
             this.tokens = tokens;
         }
-        public Expr parse()
+        public List<Stmt> parse()
         {
-            try
-            {
-                Expr expr = expression();
+            //try
+            //{
+            //    Expr expr = expression();
 
-                // Add validation that we've consumed all tokens
-                if (!isAtEnd())
-                {
-                    throw error(peek(), $"Unexpected characters after expression '{previous().Lexeme}'.");
-                }
+            //    // Add validation that we've consumed all tokens
+            //    if (!isAtEnd())
+            //    {
+            //        throw error(peek(), $"Unexpected characters after expression '{previous().Lexeme}'.");
+            //    }
 
-                return expr;
-            }
-            catch (ParseError error)
+            //    return expr;
+            //}
+            //catch (ParseError error)
+            //{
+            //    return null;
+            //}
+
+            List<Stmt> statements = new List<Stmt>();
+            while (!isAtEnd())
             {
-                return null;
+                statements.Add(statements());
             }
+
+            return statements;
         }
 
-        #region BNF
+        #region Program BNF
+        //program   := statement* EOF;
+
+        //statement := exprStmt
+        //          | printStmt ;
+
+        //exprStmt  := expression ";" ;
+        //printStmt := "print" expression ";" ;
+        #endregion
+
+
+
+
+        #region Expression BNF
         // extended BNF grammar representation:
 
         // expression := equality ;
