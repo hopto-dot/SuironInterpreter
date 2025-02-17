@@ -134,8 +134,8 @@ def main():
     ])
 
     define_ast(output_dir, "Stmt", [
-        "Expression   : Expr Expression",
-        "Print : Expr Expression"
+        "Expression   : Expr expression",
+        "Print : Expr expression"
     ])
 
 if __name__ == "__main__":
