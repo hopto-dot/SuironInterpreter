@@ -15,9 +15,6 @@ namespace SuironInterpreter
         static void Main(string[] args)
         {
             // args = [];
-            
-            
-            
             if (args.Length > 1)
             {
                 Console.WriteLine("Usage: SuironInterpreter [script]");
@@ -29,20 +26,6 @@ namespace SuironInterpreter
             }
             else
             {
-                //Expr expression = new Expr.Binary(
-                //                                new Expr.Unary(
-                //                                            new Token(TokenType.MINUS, "-", null, 1),
-                //                                            new Expr.Literal(123)
-                //                                              ),
-
-                //                                new Token(TokenType.STAR, "*", null, 1),
-
-                //                                new Expr.Grouping(
-                //                                                 new Expr.Literal(45.67))
-                //                                );
-
-                //Console.WriteLine(new AstPrinter().Print(expression));
-
                 Console.WriteLine("Entering interactive prompt...");
                 runPrompt();
             }
@@ -61,19 +44,6 @@ namespace SuironInterpreter
 
         private static void Run(String source)
         {
-            //Scanner scanner = new Scanner(source);
-            //List<Token> tokens = scanner.scanTokens();
-
-            //foreach (Token token in tokens) 
-            //{
-            //    Console.WriteLine(token);
-            //}
-
-            //if (hadError)
-            //{
-            //    throw new System.Exception("Lexing error.");
-            //}
-
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.scanTokens();
 

@@ -6,17 +6,18 @@ namespace SuironInterpreter
 {
     class Scanner
     {
-        private readonly string source;
+        private readonly string source; // source code input (single whole amount of text, not tokens)
         private readonly List<Token> tokens = new List<Token>();
 
         private static readonly Dictionary<string, TokenType> keywords;
 
-        private int start = 0; // points to the first character in the lexeme being scanned
+        private int start = 0; // points to the first character in the lexeme currently being scanned
         private int current = 0; // points at the character currently being considered
         private int line = 1; // tracks what source line `current` is on so we can produce tokens that know their location
 
         static Scanner()
         {
+            // define what strings correspond to what token types
             keywords = new Dictionary<string, TokenType>
             {
                 { "and", TokenType.AND }, // と
@@ -63,12 +64,14 @@ namespace SuironInterpreter
 
         private void scanToken()
         {
-            char c = advance();
+            char c = advance(); // consume the next character in the source file and returns it, increase `current`
             switch (c)
             {
                 // these tokens don't have an associated value that needs to be stored
                 // so we call addToken without the `literal` arg
-                
+
+
+                // method `addToken()` extracts lexeme text using `source.Substring(start, current - start)` then creates a new token with that text and adds to `tokens`
                 case '(': addToken(TokenType.LEFT_PAREN); break;
                 case ')': addToken(TokenType.RIGHT_PAREN); break;
                 case '{': addToken(TokenType.LEFT_BRACE); break;
@@ -89,10 +92,10 @@ namespace SuironInterpreter
                 case '>': addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER); break;
                 
                 case '/':
-                    if (match('/')) // if the next character is also a slash, then it's a comment
+                    if (match('/')) // if the next character is also a slash, then it's a comment // check if the current character is the expected one - if it is, consume it and return true
                     {
                         // A comment goes until the end of the line - we must use peek because we also need to see newlines in the switch statement
-                        while (peek() != '\n' && !isAtEnd()) // while 'look at this character' != \n, consume character
+                        while (peek() != '\n' && !isAtEnd()) // while 'look at this character' != \n, consume character // keep peeking then advancing until peek indicates we've reached the end of the line
                         {
                             advance();
                         }
@@ -124,13 +127,12 @@ namespace SuironInterpreter
                     }
                     else if (isAlpha(c))
                     {
-                        scanIdentifier();
+                        scanIdentifier(); // this function assumes text is identifier, but it also checks if it's a keyword and sets token type to that if so
                     }
                     else
                     {
                         Program.error(line, $"Unexpected character: `{c}`"); ;
                     }
-
                     break;
             }
 
@@ -204,7 +206,7 @@ namespace SuironInterpreter
             // Console.WriteLine($"Added token of type {type}: {text}");
         }
 
-        private bool match(char expected)
+        private bool match(char expected) // check if the current character is the expected one - if it is, consume it and return true
         {
             if (isAtEnd()) return false;
             if (source[current] != expected) return false;

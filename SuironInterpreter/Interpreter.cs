@@ -160,7 +160,7 @@ namespace SuironInterpreter
 
         private Object evaluate(Expr expr)
         {
-            return expr.Accept(this);
+            return expr.Accept(this); // each expression class (inheriting from Expr) has it's own override of Accept which calls the appropriate Visit method - each visit method being part of the visitor interface which is required to be implemented
         }
     }
 }

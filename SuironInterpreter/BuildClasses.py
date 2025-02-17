@@ -133,6 +133,11 @@ def main():
         "Unary    : Token Operator, Expr Right"
     ])
 
+    define_ast(output_dir, "Stmt", [
+        "Expression   : Expr Expression",
+        "Print : Expr Expression"
+    ])
+
 if __name__ == "__main__":
     main()
 
@@ -142,6 +147,6 @@ if __name__ == "__main__":
 # The purpose of each of the Visit functions is it evaluate each type of expression.
 
 # All Expression subclasses must implement an "Accept" function which points to the correct visit function in the visitor class.
-
+ 
 # In use (code interpretation), instances of expressions will exist, and when they need to be evaluated, you run the Accept function on them,
 # which runs (points to the correct) evaluate function in the visitor class.
