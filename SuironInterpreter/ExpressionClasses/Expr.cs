@@ -11,6 +11,7 @@ namespace SuironInterpreter
             R VisitGroupingExpr(Grouping expr);
             R VisitLiteralExpr(Literal expr);
             R VisitUnaryExpr(Unary expr);
+            R VisitVariableExpr(Variable expr);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -78,6 +79,21 @@ namespace SuironInterpreter
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitUnaryExpr(this);
+            }
+        }
+
+        public class Variable : Expr
+        {
+            public Variable(Token name)
+            {
+                Name = name;
+            }
+
+            public readonly Token Name;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitVariableExpr(this);
             }
         }
 

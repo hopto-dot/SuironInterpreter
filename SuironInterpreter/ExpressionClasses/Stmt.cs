@@ -9,6 +9,7 @@ namespace SuironInterpreter
         {
             R VisitExpressionStmt(Expression stmt);
             R VisitPrintStmt(Print stmt);
+            R VisitVarStmt(Var stmt);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -40,6 +41,23 @@ namespace SuironInterpreter
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitPrintStmt(this);
+            }
+        }
+
+        public class Var : Stmt
+        {
+            public Var(Token name, Expr initialiser)
+            {
+                Name = name;
+                Initialiser = initialiser;
+            }
+
+            public readonly Token Name;
+            public readonly Expr Initialiser;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitVarStmt(this);
             }
         }
 

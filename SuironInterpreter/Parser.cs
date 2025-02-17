@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static SuironInterpreter.Stmt;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SuironInterpreter
@@ -21,30 +22,43 @@ namespace SuironInterpreter
         }
         public List<Stmt> parse()
         {
-            //try
-            //{
-            //    Expr expr = expression();
-
-            //    // Add validation that we've consumed all tokens
-            //    if (!isAtEnd())
-            //    {
-            //        throw error(peek(), $"Unexpected characters after expression '{previous().Lexeme}'.");
-            //    }
-
-            //    return expr;
-            //}
-            //catch (ParseError error)
-            //{
-            //    return null;
-            //}
 
             List<Stmt> statements = new List<Stmt>();
             while (!isAtEnd())
             {
-                statements.Add(statement());
+                statements.Add(declaration());
             }
 
             return statements;
+        }
+
+        private Stmt declaration()
+        {
+            try
+            {
+                if (match(TokenType.VAR)) return varDeclaration();
+
+                return statement();
+            }
+            catch (ParseError error)
+            {
+                synchronize();
+                return null;
+            }
+        }
+
+        private Stmt varDeclaration()
+        {
+            Token name = consume(TokenType.IDENTIFIER, "Expected a variable name.");
+
+            Expr initializer = null;
+            if (match(TokenType.EQUAL))
+            {
+                initializer = expression();
+            }
+
+            consume(TokenType.SEMICOLON, "Expected a ';' after variable declaration.");
+            return new Stmt.Var(name, initializer);
         }
 
         #region Program BNF
@@ -171,6 +185,11 @@ namespace SuironInterpreter
                 return new Expr.Literal(previous().Literal);
             }
 
+            if (match(TokenType.IDENTIFIER))
+            {
+                return new Expr.Variable(previous());
+            }
+
             if (match(TokenType.LEFT_PAREN))
             {
                 Expr expr = expression();
@@ -221,8 +240,7 @@ namespace SuironInterpreter
         {
             if (check(type)) return advance();
 
-            // throw error(peek(), message);
-            Program.error(peek(), message);
+                throw error(peek(), message);
             return null;
         }
 

@@ -130,12 +130,14 @@ def main():
         "Binary   : Expr Left, Token Operator, Expr Right",
         "Grouping : Expr Expression",
         "Literal  : object Value",
-        "Unary    : Token Operator, Expr Right"
+        "Unary    : Token Operator, Expr Right",
+        "Variable : Token name"
     ])
 
     define_ast(output_dir, "Stmt", [
         "Expression   : Expr expression",
-        "Print : Expr expression"
+        "Print : Expr expression",
+        "Var : Token name, Expr initialiser"
     ])
 
 if __name__ == "__main__":
