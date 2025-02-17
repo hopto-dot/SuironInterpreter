@@ -9,21 +9,26 @@ using Object = System.Object;
 
 namespace SuironInterpreter
 {
-    class Interpreter : Expr.IVisitor<Object>
+    class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
-        public void interpret(Expr expression)
+        public void interpret(List<Stmt> statements)
         {
             try
             {
-                Object value = evaluate(expression);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Result: {stringify(value)}");
-                Console.ForegroundColor = ConsoleColor.White;
+                foreach (Stmt statement in statements)
+                {
+                    execute(statement);
+                }
             }
             catch (RuntimeErrorException error)
             {
-                Program.RuntimeError(error);
+                Console.WriteLine(error.Message);
             }
+        }
+
+        private void execute(Stmt stmt)
+        {
+            stmt.Accept(this);
         }
 
         private string stringify(Object @object)
@@ -46,6 +51,18 @@ namespace SuironInterpreter
                 return @object.ToString();
         }
 
+        public Object? VisitExpressionStmt(Stmt.Expression stmt)
+        {
+            evaluate(stmt.expression);
+            return null;
+        }
+
+        public Object? VisitPrintStmt(Stmt.Print stmt)
+        {
+            Object value = evaluate(stmt.expression);
+            Console.WriteLine(stringify(value));
+            return null;
+        }
 
         public Object VisitLiteralExpr(Expr.Literal expr)
         {

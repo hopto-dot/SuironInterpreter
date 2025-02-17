@@ -41,7 +41,7 @@ namespace SuironInterpreter
             List<Stmt> statements = new List<Stmt>();
             while (!isAtEnd())
             {
-                statements.Add(statements());
+                statements.Add(statement());
             }
 
             return statements;
@@ -57,7 +57,27 @@ namespace SuironInterpreter
         //printStmt := "print" expression ";" ;
         #endregion
 
+        private Stmt statement()
+        {
+            if (match(TokenType.PRINT))
+            {
+                return printStatement();
+            }
+            return expressionStatement();
+        }
 
+        private Stmt printStatement()
+        {
+            Expr value = expression();
+            consume(TokenType.SEMICOLON, "Expected ';' at the end of the line.");
+            return new Stmt.Print(value);
+        }
+        private Stmt expressionStatement()
+        {
+            Expr expr = expression();
+            consume(TokenType.SEMICOLON, "Expect ';' after expression.");
+            return new Stmt.Expression(expr);
+        }
 
 
         #region Expression BNF
@@ -73,7 +93,6 @@ namespace SuironInterpreter
         // primary    := NUMBER | STRING | "true" | "false" | "nil"
         //               | "(" expression ")" ;
         #endregion
-
         private Expr expression()
         {
             return equality();
@@ -104,7 +123,6 @@ namespace SuironInterpreter
 
             return expr;
         }
-
         private Expr term()
         {
             Expr expr = factor();
@@ -142,7 +160,6 @@ namespace SuironInterpreter
 
             return primary();
         }
-
         private Expr primary()
         {
             if (match(TokenType.FALSE)) return new Expr.Literal(false);
@@ -204,7 +221,9 @@ namespace SuironInterpreter
         {
             if (check(type)) return advance();
 
-            throw error(peek(), message);
+            // throw error(peek(), message);
+            Program.error(peek(), message);
+            return null;
         }
 
         private ParseError error(Token token, string message)
@@ -237,8 +256,6 @@ namespace SuironInterpreter
                 advance();
             }
         }
-
-
         private bool match(params TokenType[] types)
         {
             foreach (TokenType type in types)
@@ -252,7 +269,6 @@ namespace SuironInterpreter
 
             return false;
         }
-
         private bool check(TokenType type)
         {
             if (isAtEnd())
@@ -264,7 +280,6 @@ namespace SuironInterpreter
                 return peek().Type == type;
             }
         }
-
         private Token advance()
         {
             if (!isAtEnd())
@@ -273,17 +288,14 @@ namespace SuironInterpreter
             }
             return previous();
         }
-
         private bool isAtEnd()
         {
             return peek().Type == TokenType.EOF;
         }
-
         private Token peek()
         {
             return tokens[current];
         }
-
         private Token previous()
         {
             return tokens[current - 1];

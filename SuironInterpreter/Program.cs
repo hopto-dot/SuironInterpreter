@@ -44,11 +44,12 @@ namespace SuironInterpreter
 
         private static void Run(String source)
         {
+            // source = "print \"hello\";";
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.scanTokens();
 
             Parser parser = new Parser(tokens);
-            Expr expression = parser.parse();
+            List<Stmt> statements = parser.parse();
 
             // Stop if there was a syntax error.
             if (hadError)
@@ -58,11 +59,11 @@ namespace SuironInterpreter
 
             AstPrinter printer = new AstPrinter();
 
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"Evaluating '{printer.Print(expression)}'");
-            Console.ForegroundColor = ConsoleColor.White;
+            //Console.ForegroundColor = ConsoleColor.Blue;
+            //Console.WriteLine($"Evaluating '{printer.Print(expression)}'");
+            //Console.ForegroundColor = ConsoleColor.White;
 
-            interpreter.interpret(expression);
+            interpreter.interpret(statements);
 
             // object value = interpreter.evaluate(expression);
         }
