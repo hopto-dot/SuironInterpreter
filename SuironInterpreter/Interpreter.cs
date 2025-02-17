@@ -11,6 +11,8 @@ namespace SuironInterpreter
 {
     class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
+        private Environment environment = new Environment();
+
         public void interpret(List<Stmt> statements)
         {
             try
@@ -49,6 +51,23 @@ namespace SuironInterpreter
             }
 
                 return @object.ToString();
+        }
+
+        public Object? VisitVarStmt(Stmt.Var stmt)
+        {
+            Object value = null;
+            if (stmt.Initialiser != null)
+            {
+                value = evaluate(stmt.Initialiser);
+            }
+
+            environment.define(stmt.Name.Lexeme, value);
+            return null;
+        }
+
+        public Object VisitVariableExpr(Expr.Variable expr)
+        {
+            return environment.get(expr.Name);
         }
 
         public Object? VisitExpressionStmt(Stmt.Expression stmt)

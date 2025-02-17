@@ -14,6 +14,11 @@ namespace SuironInterpreter.ExpressionClasses
             return expr.Accept(this);
         }
 
+        public string VisitVariableExpr(Expr.Variable variable)
+        {
+            return $"var {variable.Name}";
+        }
+
         //  Visit methods
         public string VisitBinaryExpr(Expr.Binary expr)
         {

@@ -52,12 +52,20 @@ namespace SuironInterpreter
             Token name = consume(TokenType.IDENTIFIER, "Expected a variable name.");
 
             Expr initializer = null;
+            if (peek().Type == TokenType.STRING)
+            {
+                error(peek(), "Expected '=' after variable name.");
+                return null;
+            }
+            
             if (match(TokenType.EQUAL))
             {
                 initializer = expression();
             }
 
-            consume(TokenType.SEMICOLON, "Expected a ';' after variable declaration.");
+            string errorString = initializer == null ? $"Expected initialiser after declaration of variable '{name.Lexeme}' but got '{peek().Lexeme}'." : "Expected a ';' after variable declaration.";
+
+            consume(TokenType.SEMICOLON, errorString);
             return new Stmt.Var(name, initializer);
         }
 
