@@ -36,6 +36,7 @@ namespace SuironInterpreter
         {
             try
             {
+                
                 if (match(TokenType.VAR)) return varDeclaration();
 
                 return statement();

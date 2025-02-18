@@ -12,7 +12,9 @@ namespace SuironInterpreter
 
         public void define(string name, Object value)
         {
-            values.Add(name, value);
+            //if (values.ContainsKey(name)) return;
+            //values.Add(name, value);
+            values[name] = value;
         }
 
         public Object get(Token name)
