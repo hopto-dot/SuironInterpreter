@@ -255,7 +255,7 @@ namespace SuironInterpreter
 
         private ParseError error(Token token, string message)
         {
-            Program.error(token, message);
+            Program.error(token.Line, message);
             return new ParseError();
         }
 

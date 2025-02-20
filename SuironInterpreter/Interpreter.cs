@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuironInterpreter.ExpressionClasses;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -58,7 +59,10 @@ namespace SuironInterpreter
             Object value = null;
             if (stmt.Initialiser != null)
             {
+                // AstPrinter printer = new AstPrinter();
+                // Console.Write(printer.Print(stmt.Initialiser));
                 value = evaluate(stmt.Initialiser);
+                // Console.WriteLine($" = {value}");
             }
 
             environment.define(stmt.Name.Lexeme, value);
