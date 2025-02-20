@@ -42,7 +42,7 @@ namespace SuironInterpreter
                 return statement();
             }
             catch (ParseError error)
-            {
+            {              
                 synchronize();
                 return null;
             }
@@ -50,7 +50,14 @@ namespace SuironInterpreter
 
         private Stmt varDeclaration()
         {
-            Token name = consume(TokenType.IDENTIFIER, "Expected a variable name.");
+            string errorMessage = "Expected a variable name.";
+            if (peek().Type == TokenType.NUMBER)
+            {
+                errorMessage += " Variable name cannot be a number.";
+            }
+
+
+            Token name = consume(TokenType.IDENTIFIER, errorMessage);
 
             Expr initializer = null;
             if (peek().Type == TokenType.STRING)
