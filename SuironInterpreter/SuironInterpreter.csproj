@@ -13,4 +13,8 @@
     <None Remove="output\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="exe.lnk" />
+  </ItemGroup>
+
 </Project>
