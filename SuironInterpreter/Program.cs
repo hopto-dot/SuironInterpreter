@@ -45,7 +45,7 @@ namespace SuironInterpreter
         private static void Run(String source)
         {
             // source = "print \"hello\";";
-            if (!source.EndsWith(";")) source += ";";
+            if (!source.TrimEnd().EndsWith(";")) source += ";";
 
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.scanTokens();

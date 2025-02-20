@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Object = System.Object;
 
@@ -25,7 +26,11 @@ namespace SuironInterpreter
             }
             catch (RuntimeErrorException error)
             {
-                Console.WriteLine(error.Message);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{error.Message}\n\n");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine(error.StackTrace);
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
 
@@ -54,12 +59,16 @@ namespace SuironInterpreter
                 return @object.ToString();
         }
 
-        public Object? VisitAssignStmt(Stmt.Assign stmt)
+        public Object? VisitAssignExpr(Expr.Assign expr)
         {
+            Object value = evaluate(expr.Value);
 
+            environment.assign(expr.Name, value); 
+
+            return value;
         }
 
-        public Object? VisitVarStmt(Stmt.Var stmt)
+        public Object? VisitVarStmt(Stmt.Var stmt)  
         {
             Object value = null;
             if (stmt.Initialiser != null)
@@ -71,6 +80,7 @@ namespace SuironInterpreter
             }
 
             environment.define(stmt.Name.Lexeme, value);
+
             return null;
         }
 

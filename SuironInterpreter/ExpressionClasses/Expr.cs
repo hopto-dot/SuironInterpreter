@@ -8,6 +8,7 @@ namespace SuironInterpreter
         public interface IVisitor<R>
         {
             R VisitAssignExpr(Assign expr);
+            R VisitBinaryExpr(Binary expr);
             R VisitGroupingExpr(Grouping expr);
             R VisitLiteralExpr(Literal expr);
             R VisitUnaryExpr(Unary expr);
@@ -18,18 +19,37 @@ namespace SuironInterpreter
 
         public class Assign : Expr
         {
-            public Assign(Token name, Expr valueBinary)
+            public Assign(Token name, Expr value)
             {
                 Name = name;
-                Valuebinary = valueBinary;
+                Value = value;
             }
 
             public readonly Token Name;
-            public readonly Expr Valuebinary;
+            public readonly Expr Value;
 
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitAssignExpr(this);
+            }
+        }
+
+        public class Binary : Expr
+        {
+            public Binary(Expr left, Token @operator, Expr right)
+            {
+                Left = left;
+                Operator = @operator;
+                Right = right;
+            }
+
+            public readonly Expr Left;
+            public readonly Token Operator;
+            public readonly Expr Right;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitBinaryExpr(this);
             }
         }
 

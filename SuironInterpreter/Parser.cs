@@ -132,14 +132,15 @@ namespace SuironInterpreter
 
         private Expr assignment()
         {
-            Expr expr = equality();
+            Expr expr = equality(); // this turns the left side into an expression
 
-            if (match(TokenType.EQUAL))
+            if (match(TokenType.EQUAL)) // if after that expression is `=`
             {
-                Token equals = previous();
-                Expr value = assignment();
+                Token equals = previous(); // we set the token which comes before the `=` to `equals` (the identifier)
+                Expr value = assignment(); // we now run assignment method again which returns the right side of the expression (the value)
 
-                if (expr is Expr.Variable) {
+                if (expr is Expr.Variable) // if the left side is a variable (we're expecting it to be specfically an identifier)
+                { 
                     Token name = ((Expr.Variable)expr).Name;
                     return new Expr.Assign(name, value);
                 }

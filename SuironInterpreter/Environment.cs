@@ -12,9 +12,23 @@ namespace SuironInterpreter
 
         public void define(string name, Object value)
         {
-            //if (values.ContainsKey(name)) return;
-            //values.Add(name, value);
-            values[name] = value;
+            if (values.ContainsKey(name))
+            {
+                throw new RuntimeErrorException($"Variable {name} is already defined.");
+            }
+            //values.Add(name, value);s
+            values.Add(name, value);
+        }
+
+        public void assign(Token name, Object value)
+        {
+            if (values.ContainsKey(name.Lexeme))
+            {
+                values[name.Lexeme] = value;
+                return;
+            }
+
+            throw new RuntimeErrorException(name, $"Variable {name.Lexeme} is undefined.");
         }
 
         public Object get(Token name)

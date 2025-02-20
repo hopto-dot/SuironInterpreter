@@ -13,7 +13,10 @@ namespace SuironInterpreter.ExpressionClasses
         {
             return expr.Accept(this);
         }
-
+        public string VisitAssignExpr(Expr.Assign expr)
+        {
+            return $"var {expr.Name.Lexeme} = {expr.Value.Accept(this)}";
+        }
         public string VisitVariableExpr(Expr.Variable variable)
         {
             return $"var {variable.Name}";
