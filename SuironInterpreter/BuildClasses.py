@@ -137,7 +137,8 @@ def main():
     define_ast(output_dir, "Stmt", [
         "Expression   : Expr expression",
         "Print : Expr expression",
-        "Var : Token name, Expr initialiser"
+        "Var : Token name, Expr initialiser",
+        "Assign : Toke name, Expr value"
     ])
 
 if __name__ == "__main__":

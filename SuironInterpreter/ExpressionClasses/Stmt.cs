@@ -10,6 +10,7 @@ namespace SuironInterpreter
             R VisitExpressionStmt(Expression stmt);
             R VisitPrintStmt(Print stmt);
             R VisitVarStmt(Var stmt);
+            R VisitAssignStmt(Assign stmt);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -18,10 +19,10 @@ namespace SuironInterpreter
         {
             public Expression(Expr expression)
             {
-                this.expression = expression;
+                Expression = expression;
             }
 
-            public readonly Expr expression;
+            public readonly Expr Expression;
 
             public override R Accept<R>(IVisitor<R> visitor)
             {
@@ -33,10 +34,10 @@ namespace SuironInterpreter
         {
             public Print(Expr expression)
             {
-                this.expression = expression;
+                Expression = expression;
             }
 
-            public readonly Expr expression;
+            public readonly Expr Expression;
 
             public override R Accept<R>(IVisitor<R> visitor)
             {
@@ -58,6 +59,23 @@ namespace SuironInterpreter
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitVarStmt(this);
+            }
+        }
+
+        public class Assign : Stmt
+        {
+            public Assign(Toke name, Expr value)
+            {
+                Name = name;
+                Value = value;
+            }
+
+            public readonly Toke Name;
+            public readonly Expr Value;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitAssignStmt(this);
             }
         }
 
