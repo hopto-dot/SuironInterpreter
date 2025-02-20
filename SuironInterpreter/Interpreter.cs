@@ -54,6 +54,11 @@ namespace SuironInterpreter
                 return @object.ToString();
         }
 
+        public Object? VisitAssignStmt(Stmt.Assign stmt)
+        {
+
+        }
+
         public Object? VisitVarStmt(Stmt.Var stmt)
         {
             Object value = null;

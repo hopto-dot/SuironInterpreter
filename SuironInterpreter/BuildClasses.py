@@ -127,6 +127,7 @@ def main():
 
     # Define the AST structure
     define_ast(output_dir, "Expr", [
+        "Assign : Token name, Expr value"
         "Binary   : Expr Left, Token Operator, Expr Right",
         "Grouping : Expr Expression",
         "Literal  : object Value",
@@ -138,7 +139,6 @@ def main():
         "Expression   : Expr expression",
         "Print : Expr expression",
         "Var : Token name, Expr initialiser",
-        "Assign : Toke name, Expr value"
     ])
 
 if __name__ == "__main__":

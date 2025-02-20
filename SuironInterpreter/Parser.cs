@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static SuironInterpreter.Expr;
 using static SuironInterpreter.Stmt;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -125,8 +126,30 @@ namespace SuironInterpreter
         #endregion
         private Expr expression()
         {
-            return equality();
+            // return equality();
+            return assignment();
         }
+
+        private Expr assignment()
+        {
+            Expr expr = equality();
+
+            if (match(TokenType.EQUAL))
+            {
+                Token equals = previous();
+                Expr value = assignment();
+
+                if (expr is Expr.Variable) {
+                    Token name = ((Expr.Variable)expr).Name;
+                    return new Expr.Assign(name, value);
+                }
+
+                error(equals, "Invalid assignment target.");
+            }
+
+            return expr;
+        }
+
         private Expr equality()
         {
             Expr expr = comparison();
