@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <None Remove="exe.lnk" />
+    <None Remove="net8.0 - Shortcut.lnk" />
   </ItemGroup>
 
 </Project>

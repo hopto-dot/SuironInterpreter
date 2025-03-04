@@ -8,7 +8,8 @@ namespace SuironInterpreter.ExpressionClasses
 {
     class AstPrinter : Expr.IVisitor<String>
     {
-        // this method is to be able to print using printerVisitorInstance.Print(exprClassInstance) rather than exprClassInstance.Accept(printerVisitorInstance)
+        // this method is to be able to print using printerVisitorInstance.Print(exprClassInstance)
+        // rather than exprClassInstance.Accept(printerVisitorInstance)
         public String Print(Expr expr)
         {
             return expr.Accept(this);

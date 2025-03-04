@@ -41,9 +41,10 @@ namespace SuironInterpreter
 
         private string stringify(Object @object)
         {
-            if (@object == null) return "無";
+            if (@object == null) return "Null"; // return "無";
 
-            if (@object is Double) {
+            if (@object is Double)
+            {
                 string text = @object.ToString();
                 if (text.EndsWith(".0"))
                 {
@@ -53,10 +54,10 @@ namespace SuironInterpreter
             }
             else if (@object is string)
             {
-                return $"\"{@object}\"";
+                return $"{@object}";
             }
-
-                return @object.ToString();
+            
+            return @object.ToString();
         }
 
         public Object? VisitAssignExpr(Expr.Assign expr)

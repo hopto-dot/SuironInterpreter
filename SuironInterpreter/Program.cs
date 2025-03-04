@@ -16,6 +16,8 @@ namespace SuironInterpreter
         static void Main(string[] args)
         {
             // args = [];
+            args = ["test.suiron"];
+
             if (args.Length > 1)
             {
                 Console.WriteLine("Usage: SuironInterpreter [script]");
@@ -35,6 +37,7 @@ namespace SuironInterpreter
         private static void runFile(String path)
         {
             String sourceText = File.ReadAllText(path);
+            Console.WriteLine($"Interpreting file '{path}'...");
             Run(sourceText);
 
             if (hadError)
