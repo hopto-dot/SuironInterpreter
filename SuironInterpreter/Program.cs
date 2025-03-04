@@ -1,6 +1,7 @@
 ﻿using SuironInterpreter.ExpressionClasses;
 using System.IO;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace SuironInterpreter
