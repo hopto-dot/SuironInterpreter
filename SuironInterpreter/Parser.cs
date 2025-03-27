@@ -90,6 +90,10 @@ namespace SuironInterpreter
 
         private Stmt statement()
         {
+            if (match(TokenType.FOR))
+            {
+                return forStatement();
+            }
             if (match(TokenType.IF))
             {
                 return ifStatement();
@@ -98,11 +102,76 @@ namespace SuironInterpreter
             {
                 return printStatement();
             }
+            if (match(TokenType.WHILE))
+            {
+                return whileStatement();
+            }
             if (match(TokenType.LEFT_BRACE))
             {
                 return new Stmt.Block(block());
             }
             return expressionStatement();
+        }
+
+        private Stmt forStatement()
+        {
+            consume(TokenType.LEFT_PAREN, "'(' after 'for' is expected");
+
+            Stmt initialiser;
+            if (match(TokenType.SEMICOLON))
+            {
+                initialiser = null;
+            }
+            else if (match(TokenType.VAR))
+            {
+                initialiser = varDeclaration();
+            }
+            else
+            {
+                initialiser = expressionStatement();
+            }
+
+            Expr condition = null;
+            if (!check(TokenType.SEMICOLON))
+            {
+                condition = expression();
+            }
+            consume(TokenType.SEMICOLON, "';' after loop condition is expected");
+
+            Expr increment = null;
+            if (!check(TokenType.RIGHT_PAREN))
+            {
+                increment = expression();
+            }
+            consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
+
+            Stmt body = statement();
+
+            if (increment != null)
+            {
+                body = new Stmt.Block( new List<Stmt> { body, new Stmt.Expression(increment) } );
+            }
+
+            if (condition == null) condition = new Expr.Literal(true);
+            
+            body = new Stmt.While(condition, body);
+
+            if (initialiser != null)
+            {
+                body = new Stmt.Block(new List<Stmt> { initialiser, body });
+            }
+
+            return body;
+        }
+
+        private Stmt whileStatement()
+        {
+            consume(TokenType.LEFT_PAREN, "'(' after 'while' is expected");
+            Expr condition = expression();
+            consume(TokenType.RIGHT_PAREN, "')' after condition is expected");
+            Stmt body = statement();
+
+            return new Stmt.While(condition, body);
         }
 
         private Stmt ifStatement()

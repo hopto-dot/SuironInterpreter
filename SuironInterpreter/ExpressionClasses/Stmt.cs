@@ -12,6 +12,7 @@ namespace SuironInterpreter
             R VisitIfStmt(If stmt);
             R VisitPrintStmt(Print stmt);
             R VisitVarStmt(Var stmt);
+            R VisitWhileStmt(While stmt);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -94,6 +95,23 @@ namespace SuironInterpreter
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitVarStmt(this);
+            }
+        }
+
+        public class While : Stmt
+        {
+            public While(Expr condition, Stmt body)
+            {
+                Condition = condition;
+                Body = body;
+            }
+
+            public readonly Expr Condition;
+            public readonly Stmt Body;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitWhileStmt(this);
             }
         }
 

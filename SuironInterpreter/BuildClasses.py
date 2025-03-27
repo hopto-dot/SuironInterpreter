@@ -141,7 +141,8 @@ def main():
         "Expression   : Expr expression",
         "If : Expr condition, Stmt thenBranch, Stmt elseBranch",
         "Print : Expr expression",
-        "Var : Token name, Expr initialiser"
+        "Var : Token name, Expr initialiser",
+        "While : Expr condition, Stmt body"
     ])
 
 if __name__ == "__main__":

@@ -60,6 +60,17 @@ namespace SuironInterpreter
             return @object.ToString();
         }
 
+        public Object VisitWhileStmt(Stmt.While stmt)
+        {
+            while (isTruthy(evaluate(stmt.Condition)))
+            {
+                execute(stmt.Body);
+            }
+            return null;
+        }
+
+
+
         public Object VisitLogicalExpr(Expr.Logical expr)
         {
             Object left = evaluate(expr.Left);
