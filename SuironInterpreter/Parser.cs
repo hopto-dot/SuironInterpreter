@@ -90,6 +90,10 @@ namespace SuironInterpreter
 
         private Stmt statement()
         {
+            if (match(TokenType.IF))
+            {
+                return ifStatement();
+            }
             if (match(TokenType.PRINT))
             {
                 return printStatement();
@@ -99,6 +103,22 @@ namespace SuironInterpreter
                 return new Stmt.Block(block());
             }
             return expressionStatement();
+        }
+
+        private Stmt ifStatement()
+        {
+            consume(TokenType.LEFT_PAREN, "'(' after the 'if' is expected.");
+            Expr condition = expression();
+            consume(TokenType.RIGHT_PAREN, "')' after if condition is expected.");
+
+            Stmt thenBranch = statement();
+            Stmt elseBranch = null;
+            if (match(TokenType.ELSE))
+            {
+                elseBranch = statement();
+            }
+
+            return new Stmt.If(condition, thenBranch, elseBranch);
         }
 
         private List<Stmt> block()

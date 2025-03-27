@@ -60,6 +60,11 @@ namespace SuironInterpreter
             return @object.ToString();
         }
 
+        public Object? VisitIfStmt(Stmt.If stmt)
+        {
+            if () // Syntax in hand, we are ready to interpret.
+        }
+
         public Object? VisitBlockStmt(Stmt.Block stmt)
         {
             executeBlock(stmt.Statements, new Environment(environment));

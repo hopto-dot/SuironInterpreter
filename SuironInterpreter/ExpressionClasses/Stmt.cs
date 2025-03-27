@@ -9,6 +9,7 @@ namespace SuironInterpreter
         {
             R VisitBlockStmt(Block stmt);
             R VisitExpressionStmt(Expression stmt);
+            R VisitIfStmt(If stmt);
             R VisitPrintStmt(Print stmt);
             R VisitVarStmt(Var stmt);
         }
@@ -45,14 +46,33 @@ namespace SuironInterpreter
             }
         }
 
+        public class If : Stmt
+        {
+            public If(Expr condition, Stmt thenBranch, Stmt elseBranch)
+            {
+                Condition = condition;
+                Thenbranch = thenBranch;
+                Elsebranch = elseBranch;
+            }
+
+            public readonly Expr Condition;
+            public readonly Stmt Thenbranch;
+            public readonly Stmt Elsebranch;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitIfStmt(this);
+            }
+        }
+
         public class Print : Stmt
         {
             public Print(Expr expression)
             {
-                this.expression = expression;
+                Expression = expression;
             }
 
-            public readonly Expr expression;
+            public readonly Expr Expression;
 
             public override R Accept<R>(IVisitor<R> visitor)
             {

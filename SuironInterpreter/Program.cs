@@ -10,7 +10,7 @@ namespace SuironInterpreter
     {
         static bool hadError = false;
         static bool hadRuntimeError = false;
-
+            
         private static readonly Interpreter interpreter = new Interpreter();
 
         static void Main(string[] args)
@@ -37,7 +37,8 @@ namespace SuironInterpreter
         private static void runFile(String path)
         {
             String sourceText = File.ReadAllText(path);
-            Console.WriteLine($"Interpreting file '{path}'...");
+            // Console.WriteLine(sourceText);
+            // Console.WriteLine("Running code:");
             Run(sourceText);
 
             if (hadError)
@@ -49,7 +50,7 @@ namespace SuironInterpreter
         private static void Run(String source)
         {
             // source = "print \"hello\";";
-            if (!source.TrimEnd().EndsWith(";")) source += ";";
+            // if (!source.TrimEnd().EndsWith(";")) source += ";";
 
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.scanTokens();
