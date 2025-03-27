@@ -62,7 +62,15 @@ namespace SuironInterpreter
 
         public Object? VisitIfStmt(Stmt.If stmt)
         {
-            if () // Syntax in hand, we are ready to interpret.
+            if (isTruthy(evaluate(stmt.Condition)))
+            {
+                execute(stmt.Thenbranch);
+            }
+            else if (stmt.Elsebranch != null)
+            {
+                execute(stmt.Elsebranch);
+            }
+            return null;
         }
 
         public Object? VisitBlockStmt(Stmt.Block stmt)
