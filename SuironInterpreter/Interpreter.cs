@@ -60,6 +60,28 @@ namespace SuironInterpreter
             return @object.ToString();
         }
 
+        public Object VisitLogicalExpr(Expr.Logical expr)
+        {
+            Object left = evaluate(expr.Left);
+
+            if (expr.Operator.Type == TokenType.OR)
+            {
+                if (isTruthy(left))
+                {
+                    return left;
+                }
+            }
+            else
+            {
+                if (!isTruthy(left))
+                {
+                    return left;
+                }
+            }
+
+            return evaluate(expr.Right);
+        }
+
         public Object? VisitIfStmt(Stmt.If stmt)
         {
             if (isTruthy(evaluate(stmt.Condition)))

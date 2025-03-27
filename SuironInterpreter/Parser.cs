@@ -167,9 +167,39 @@ namespace SuironInterpreter
             return assignment();
         }
 
+        private Expr or()
+        {
+            Expr expr = and();
+
+            while (match(TokenType.OR))
+            {
+                Token @operator = previous();
+                Expr right = and();
+                expr = new Expr.Logical(expr, @operator, right);
+            }
+
+            return expr;
+        }
+
+        private Expr and()
+        {
+            Expr expr = equality();
+
+            while (match(TokenType.AND))
+            {
+                Token @operator = previous();
+                Expr right = equality();
+                expr = new Expr.Logical(expr, @operator, right);
+            }
+
+            return expr;
+        }
+
         private Expr assignment()
         {
-            Expr expr = equality(); // this turns the left side into an expression
+            Expr expr = or();
+            
+            // Expr expr = equality(); // this turns the left side into an expression
 
             if (match(TokenType.EQUAL)) // if after that expression is `=`
             {

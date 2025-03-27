@@ -16,7 +16,7 @@ namespace SuironInterpreter
         static void Main(string[] args)
         {
             // args = [];
-            args = ["test.suiron"];
+            // args = ["test.suiron"];
 
             if (args.Length > 1)
             {

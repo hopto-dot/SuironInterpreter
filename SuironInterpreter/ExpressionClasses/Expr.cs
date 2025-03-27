@@ -11,6 +11,7 @@ namespace SuironInterpreter
             R VisitBinaryExpr(Binary expr);
             R VisitGroupingExpr(Grouping expr);
             R VisitLiteralExpr(Literal expr);
+            R VisitLogicalExpr(Logical expr);
             R VisitUnaryExpr(Unary expr);
             R VisitVariableExpr(Variable expr);
         }
@@ -80,6 +81,25 @@ namespace SuironInterpreter
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitLiteralExpr(this);
+            }
+        }
+
+        public class Logical : Expr
+        {
+            public Logical(Expr left, Token @operator, Expr right)
+            {
+                Left = left;
+                Operator = @operator;
+                Right = right;
+            }
+
+            public readonly Expr Left;
+            public readonly Token Operator;
+            public readonly Expr Right;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitLogicalExpr(this);
             }
         }
 
