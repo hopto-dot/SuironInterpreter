@@ -17,10 +17,10 @@ namespace SuironInterpreter
         {
             // Example class instance: Token(TokenType.NUMBER, "123.45", 123.45, 1)
 
-            Type = type; 
-            Lexeme = lexeme; 
-            Literal = literal;  
-            Line = line; 
+            Type = type;
+            Lexeme = lexeme;
+            Literal = literal;
+            Line = line;
         }
 
         public override string ToString()

@@ -7,12 +7,28 @@ namespace SuironInterpreter
     {
         public interface IVisitor<R>
         {
+            R VisitBlockStmt(Block stmt);
             R VisitExpressionStmt(Expression stmt);
             R VisitPrintStmt(Print stmt);
             R VisitVarStmt(Var stmt);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
+
+        public class Block : Stmt
+        {
+            public Block(List<Stmt> statements)
+            {
+                Statements = statements;
+            }
+
+            public readonly List<Stmt> Statements;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitBlockStmt(this);
+            }
+        }
 
         public class Expression : Stmt
         {

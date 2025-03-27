@@ -60,6 +60,30 @@ namespace SuironInterpreter
             return @object.ToString();
         }
 
+        public Object? VisitBlockStmt(Stmt.Block stmt)
+        {
+            executeBlock(stmt.Statements, new Environment(environment));
+            return null;
+        }
+
+        void executeBlock(List<Stmt> statements, Environment environment)
+        {
+            Environment previous = this.environment;
+            try
+            {
+                this.environment = environment;
+
+                foreach (Stmt statement in statements)
+                {
+                    execute(statement);
+                }
+            }
+            finally
+            {
+                this.environment = previous;
+            }
+        }
+
         public Object? VisitAssignExpr(Expr.Assign expr)
         {
             Object value = evaluate(expr.Value);

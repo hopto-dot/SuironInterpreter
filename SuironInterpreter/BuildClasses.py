@@ -136,6 +136,7 @@ def main():
     ])
 
     define_ast(output_dir, "Stmt", [
+        "Block : List<Stmt> statements",
         "Expression   : Expr expression",
         "Print : Expr expression",
         "Var : Token name, Expr initialiser"

@@ -8,7 +8,18 @@ namespace SuironInterpreter
 {
     class Environment
     {
+        public readonly Environment? enclosing = null;
         private readonly Dictionary<String, Object> values = new Dictionary<String, Object>();
+
+        public Environment() // for main global environment
+        {
+            enclosing = null;
+        }
+
+        public Environment(Environment enclosing) // for local scopes
+        {
+            this.enclosing = enclosing;
+        }
 
         public void define(string name, Object value)
         {
@@ -28,6 +39,12 @@ namespace SuironInterpreter
                 return;
             }
 
+            if (enclosing != null)
+            {
+                enclosing.assign(name, value);
+                return;
+            }
+
             throw new RuntimeErrorException(name, $"Variable {name.Lexeme} is undefined.");
         }
 
@@ -36,6 +53,12 @@ namespace SuironInterpreter
             if (values.ContainsKey(name.Lexeme))
             {
                 return values[name.Lexeme];
+            }
+
+            // code will reach here if can't find variable in current scope
+            if (enclosing != null)
+            {
+                return enclosing.get(name); // try outer scope
             }
 
             throw new RuntimeErrorException($"Variable {name.Lexeme} is undefined.");
