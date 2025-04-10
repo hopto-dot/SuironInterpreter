@@ -9,6 +9,7 @@ namespace SuironInterpreter
         {
             R VisitAssignExpr(Assign expr);
             R VisitBinaryExpr(Binary expr);
+            R VisitCallExpr(Call expr);
             R VisitGroupingExpr(Grouping expr);
             R VisitLiteralExpr(Literal expr);
             R VisitLogicalExpr(Logical expr);
@@ -51,6 +52,25 @@ namespace SuironInterpreter
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitBinaryExpr(this);
+            }
+        }
+
+        public class Call : Expr
+        {
+            public Call(Expr callee, Token paren, List<Expr> arguments)
+            {
+                Callee = callee;
+                Paren = paren;
+                Arguments = arguments;
+            }
+
+            public readonly Expr Callee;
+            public readonly Token Paren;
+            public readonly List<Expr> Arguments;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitCallExpr(this);
             }
         }
 

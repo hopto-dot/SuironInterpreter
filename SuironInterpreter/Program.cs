@@ -1,5 +1,4 @@
-﻿using SuironInterpreter.ExpressionClasses;
-using System.IO;
+﻿using System.IO;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -16,7 +15,7 @@ namespace SuironInterpreter
         static void Main(string[] args)
         {
             // args = [];
-                args = ["test.suiron"];
+            //args = ["test.suiron"];
 
             if (args.Length > 1)
             {
@@ -63,8 +62,6 @@ namespace SuironInterpreter
             {
                 return;
             }
-
-            AstPrinter printer = new AstPrinter();
 
             //Console.ForegroundColor = ConsoleColor.Blue;
             //Console.WriteLine($"Evaluating '{printer.Print(expression)}'");

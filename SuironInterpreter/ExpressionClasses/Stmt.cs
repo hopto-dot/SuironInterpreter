@@ -70,10 +70,10 @@ namespace SuironInterpreter
         {
             public Print(Expr expression)
             {
-                this.expression = expression;
+                Expression = expression;
             }
 
-            public readonly Expr expression;
+            public readonly Expr Expression;
 
             public override R Accept<R>(IVisitor<R> visitor)
             {

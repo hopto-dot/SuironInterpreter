@@ -348,8 +348,48 @@ namespace SuironInterpreter
                 return new Expr.Unary(@operator, right);
             }
 
-            return primary();
+            return call();
         }
+
+        private Expr call()
+        {
+            Expr expr = primary();
+
+            while (true)
+            {
+                if (match(TokenType.LEFT_PAREN))
+                {
+                    expr = finishCall(expr);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return expr;
+        }
+
+        private Expr finishCall(Expr callee)
+        {
+            List<Expr> arguments = new List<Expr>();
+            if (!check(TokenType.RIGHT_PAREN))
+            {
+                do // check if comma later (after) not yet
+                {
+                    if (arguments.Count >= 255)
+                    {
+                        error(peek(), "Function call is not allowed to have more than 255 arguments.");
+                    }
+                    arguments.Add(expression());
+                } while ( match(TokenType.COMMA) );
+            }
+
+            Token rightParen = consume(TokenType.RIGHT_PAREN, "')' after arguments of the call is expected.");
+
+            return new Expr.Call(callee, rightParen, arguments);
+        }
+
         private Expr primary()
         {
             if (match(TokenType.FALSE)) return new Expr.Literal(false);

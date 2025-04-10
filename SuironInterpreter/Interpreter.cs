@@ -1,5 +1,4 @@
-﻿using SuironInterpreter.ExpressionClasses;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -11,10 +10,20 @@ using Object = System.Object;
 
 namespace SuironInterpreter
 {
-    class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
+    public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
-        private Environment environment = new Environment();
+        private readonly Environment globals = new Environment();
+        private Environment environment;
 
+        public Interpreter()
+        {
+            this.globals.define("clock", new ClockFunction());
+
+            this.globals.define("input", new UserInputFunction());
+
+            this.environment = this.globals; // make sure this line goes after all definitions in global environment
+        }
+        
         public void interpret(List<Stmt> statements)
         {
             try
@@ -58,6 +67,31 @@ namespace SuironInterpreter
             }
             
             return @object.ToString();
+        }
+        public Object VisitCallExpr(Expr.Call expr)
+        {
+            Object callee = evaluate(expr.Callee);
+
+            List<Object> arguments = new List<Object>();
+            foreach (Expr argument in expr.Arguments)
+            {
+                arguments.Add(evaluate(argument));
+            }
+
+            if (!(callee is SuironCallable)) {
+                throw new RuntimeErrorException(expr.Paren, "Can only call functions and classes.");
+            }
+
+            SuironCallable function = (SuironCallable)callee;
+
+            if (arguments.Count != function.Arity())
+            {
+                throw new RuntimeErrorException(expr.Paren, "Expected " +
+                    function.Arity() + " arguments but got " +
+                    arguments.Count + ".");
+            }
+
+            return function.call(this, arguments);
         }
 
         public Object VisitWhileStmt(Stmt.While stmt)
@@ -168,7 +202,7 @@ namespace SuironInterpreter
 
         public Object? VisitPrintStmt(Stmt.Print stmt)
         {
-            Object value = evaluate(stmt.expression);
+            Object value = evaluate(stmt.Expression);
             Console.WriteLine(stringify(value));
             return null;
         }
