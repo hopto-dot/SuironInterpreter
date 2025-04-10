@@ -33,7 +33,9 @@ namespace SuironInterpreter
 
         public object call(Interpreter interpreter, List<object> arguments)
         {
-            return Console.ReadLine();
+            Console.Write(arguments[0]);
+            string userInput = Console.ReadLine();
+            return userInput;
         }
 
         public override string ToString()
