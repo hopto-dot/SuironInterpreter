@@ -37,7 +37,7 @@ namespace SuironInterpreter
         {
             try
             {
-                
+                if (match(TokenType.FUN)) return function("function");
                 if (match(TokenType.VAR)) return varDeclaration();
 
                 return statement();
@@ -47,6 +47,35 @@ namespace SuironInterpreter
                 synchronize();
                 return null;
             }
+        }
+
+        private Stmt.Function function(string kind)
+        {
+            Token name = consume(TokenType.IDENTIFIER, $"Name for {kind} is expected.");
+
+            // parse parameter list and the pair of parentheses wrapped around it:
+            consume(TokenType.LEFT_PAREN, "Expect '(' after " + kind + " name.");
+
+            List<Token> parameters = new List<Token>();
+            if (!check(TokenType.RIGHT_PAREN))
+            {
+                do
+                {
+                    if (parameters.Count >= 255)
+                    {
+                        error(peek(), "Cannot have more than 255 parameters.");
+                    }
+
+                    parameters.Add( consume(TokenType.IDENTIFIER, "Parameter name is expected.") );
+
+                } while (match(TokenType.COMMA));
+            }
+            consume(TokenType.RIGHT_PAREN, "')' after parameters is expected.");
+
+            consume(TokenType.LEFT_BRACE, "'{' " + $"before body of {kind} is expected.");
+            List<Stmt> body = block();
+
+            return new Stmt.Function(name, parameters, body);
         }
 
         private Stmt varDeclaration()

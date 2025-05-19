@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SuironInterpreter
 {
-    class Environment
+    public class Environment
     {
         public readonly Environment? enclosing = null;
         private readonly Dictionary<String, Object> values = new Dictionary<String, Object>();

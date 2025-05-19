@@ -9,6 +9,7 @@ namespace SuironInterpreter
         {
             R VisitBlockStmt(Block stmt);
             R VisitExpressionStmt(Expression stmt);
+            R VisitFunctionStmt(Function stmt);
             R VisitIfStmt(If stmt);
             R VisitPrintStmt(Print stmt);
             R VisitVarStmt(Var stmt);
@@ -44,6 +45,25 @@ namespace SuironInterpreter
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitExpressionStmt(this);
+            }
+        }
+
+        public class Function : Stmt
+        {
+            public Function(Token name, List<Token> @params, List<Stmt> body)
+            {
+                Name = name;
+                Params = @params;
+                Body = body;
+            }
+
+            public readonly Token Name;
+            public readonly List<Token> Params;
+            public readonly List<Stmt> Body;
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitFunctionStmt(this);
             }
         }
 

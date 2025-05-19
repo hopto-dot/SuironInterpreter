@@ -25,7 +25,7 @@ namespace SuironInterpreter
                 { "else", TokenType.ELSE }, // 違えば
                 { "False", TokenType.FALSE }, // 否
                 { "for", TokenType.FOR }, // の
-                { "fun", TokenType.FUN }, // 関数
+                { "function", TokenType.FUN }, // 関数
                 { "if", TokenType.IF }, // もし
                 { "nil", TokenType.NIL }, // 無
                 { "or", TokenType.OR }, // または // や

@@ -43,4 +43,22 @@ namespace SuironInterpreter
             return "<native function>";
         }
     }
+
+    public class SubstringFunction : SuironCallable
+    {
+        public int Arity()
+        {
+            return 3;
+        }
+
+        public object call(Interpreter interpreter, List<object> arguments)
+        {
+            return ((string)arguments[0]).Substring(Convert.ToInt32(arguments[1]), Convert.ToInt32(arguments[2]));
+        }
+
+        public override string ToString()
+        {
+            return "<native function>";
+        }
+    }
 }

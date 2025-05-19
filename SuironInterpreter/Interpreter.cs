@@ -12,7 +12,7 @@ namespace SuironInterpreter
 {
     public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object?>
     {
-        private readonly Environment globals = new Environment();
+        public readonly Environment globals = new Environment();
         private Environment environment;
 
         public Interpreter()
@@ -20,6 +20,8 @@ namespace SuironInterpreter
             this.globals.define("clock", new ClockFunction());
 
             this.globals.define("input", new UserInputFunction());
+
+            this.globals.define("substring", new SubstringFunction());
 
             this.environment = this.globals; // make sure this line goes after all definitions in global environment
         }
@@ -55,6 +57,12 @@ namespace SuironInterpreter
             if (@object is Double)
             {
                 string text = @object.ToString();
+
+                if (text == null)
+                {
+                    return "";
+                }
+
                 if (text.EndsWith(".0"))
                 {
                     text = text.Substring(0, text.Length - 2);
@@ -67,6 +75,13 @@ namespace SuironInterpreter
             }
             
             return @object.ToString();
+        }
+        public Object VisitFunctionStmt(Stmt.Function stmt)
+        {
+            SuironFunction function = new SuironFunction(stmt);
+            environment.define(stmt.Name.Lexeme, function);
+
+            return null;
         }
         public Object VisitCallExpr(Expr.Call expr)
         {
@@ -86,9 +101,7 @@ namespace SuironInterpreter
 
             if (arguments.Count != function.Arity())
             {
-                throw new RuntimeErrorException(expr.Paren, "Expected " +
-                    function.Arity() + " arguments but got " +
-                    arguments.Count + ".");
+                throw new RuntimeErrorException(expr.Paren, $"Expected {function.Arity()} arguments but got {arguments.Count}.");
             }
 
             return function.call(this, arguments);
@@ -102,8 +115,6 @@ namespace SuironInterpreter
             }
             return null;
         }
-
-
 
         public Object VisitLogicalExpr(Expr.Logical expr)
         {
@@ -146,7 +157,7 @@ namespace SuironInterpreter
             return null;
         }
 
-        void executeBlock(List<Stmt> statements, Environment environment)
+        public void executeBlock(List<Stmt> statements, Environment environment)
         {
             Environment previous = this.environment;
             try
