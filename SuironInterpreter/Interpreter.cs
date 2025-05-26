@@ -24,6 +24,7 @@ namespace SuironInterpreter
             this.globals.define("floor", new FloorFunction());
             this.globals.define("isInt", new IsIntFunction());
             this.globals.define("toInt", new ToIntFunction());
+            this.globals.define("wait", new WaitFunction());
 
             this.environment = this.globals;
         }
@@ -50,11 +51,12 @@ namespace SuironInterpreter
         private void execute(Stmt stmt)
         {
             stmt.Accept(this);
+
         }
 
         private string stringify(Object @object)
         {
-            if (@object == null) return "Null"; // return "無";
+            if (@object == null) return "無"; // return "無";
 
             if (@object is Double)
             {
@@ -75,8 +77,17 @@ namespace SuironInterpreter
             {
                 return $"{@object}";
             }
+            else if (@object is bool b)
+            {
+                // Suiron keywords are 真 (True) and 偽 (False)
+                // You might want to output these Japanese keywords instead of C#'s "True"/"False"
+                // return b ? "真" : "偽";
+                return b.ToString(); // This will output "True" or "False" (standard C# bool.ToString())
+                                     // Choose which representation you want for printed booleans.
+                                     // If you want "真" / "偽", use the commented line above.
+            }
 
-            
+
             return @object.ToString();
         }
         public Object VisitFunctionStmt(Stmt.Function stmt)
@@ -315,7 +326,45 @@ namespace SuironInterpreter
                     {
                         return left.ToString() + (string)right;
                     }
-                        break;
+                    
+                    // added extra cases later
+                    else if (left is string && right is bool)
+                    {
+                        return (string)left + right.ToString().Replace("True", "真").Replace("False", "偽");
+                    }
+                    else if (left is bool && right is string)
+                    {
+                        return left.ToString() + (string)right;
+                    }
+                    else if (left is Double && right is bool)
+                    {
+                        return left.ToString() + right.ToString();
+                    }
+                    else if (left is bool && right is Double)
+                    {
+                        return left.ToString() + right.ToString();
+                    }
+                    else if (left is bool && right is bool)
+                    {
+                        return left.ToString().Replace("True", "真").Replace("False", "偽") + right.ToString().Replace("True", "真").Replace("False", "偽"); // concatenate two booleans
+                    }
+                    
+                    else if (left is null && right is string)
+                    {
+                        return "無" + (string)right; // concatenate null with string
+                    }
+                    else if (left is string && right is null)
+                    {
+                        return (string)left + "無"; // concatenate string with null
+                    }
+                    else if (left is null && left is null)
+                    {
+                        return "無無";
+                    }
+
+                    return left.ToString() + right.ToString();
+
+                    break;
                 case TokenType.SLASH:
                     checkNumberOperands(expr.Operator, left, right);
                     return (double)left / (double)right;

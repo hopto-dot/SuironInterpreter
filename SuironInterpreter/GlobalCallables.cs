@@ -197,4 +197,54 @@ namespace SuironInterpreter
             return "<native function>";
         }
     }
+
+    public class WaitFunction : SuironCallable
+    {
+        public int Arity()
+        {
+            return 1;
+        }
+
+        public object call(Interpreter interpreter, List<object> arguments)
+        {
+            if (arguments[0] == null)
+            {
+                throw new RuntimeErrorException(null, "Argument to wait() cannot be nil.");
+            }
+
+            if (arguments[0] is double seconds)
+            {
+                if (seconds < 0)
+                {
+                    throw new RuntimeErrorException(null, "Wait duration cannot be negative.");
+                }
+
+                try
+                {
+                    int milliseconds = Convert.ToInt32(seconds * 1000);
+                    if (milliseconds < 0)
+                    {
+                        throw new RuntimeErrorException(null, "Wait duration is too large and resulted in an overflow.");
+                    }
+                    Thread.Sleep(milliseconds);
+                }
+                catch (OverflowException)
+                {
+                    throw new RuntimeErrorException(null, "Wait duration is too large to be represented as milliseconds.");
+                }
+
+                return null; // wait function doesn't need to return a meaningful value
+            }
+            else
+            {
+                throw new RuntimeErrorException(null, $"Argument to wait() must be a number (seconds). Got {arguments[0].GetType()}.");
+            }
+        }
+
+        public override string ToString()
+        {
+            return "<native function>";
+        }
+    }
+
 }
