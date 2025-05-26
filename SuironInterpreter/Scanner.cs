@@ -20,22 +20,19 @@ namespace SuironInterpreter
             // define what strings correspond to what token types
             keywords = new Dictionary<string, TokenType>
             {
-                { "and", TokenType.AND }, // と
-                { "class", TokenType.CLASS }, // クラス
+                { "and", TokenType.AND }, // そして
                 { "else", TokenType.ELSE }, // 違えば
-                { "False", TokenType.FALSE }, // 否
-                { "for", TokenType.FOR }, // の
+                { "False", TokenType.FALSE }, // 偽
+                { "for", TokenType.FOR }, // 繰り返し
                 { "function", TokenType.FUN }, // 関数
                 { "if", TokenType.IF }, // もし
                 { "nil", TokenType.NIL }, // 無
-                { "or", TokenType.OR }, // または // や
-                { "print", TokenType.PRINT }, // を表示
-                { "return", TokenType.RETURN }, // 返す
-                { "super", TokenType.SUPER }, // 親
-                { "this", TokenType.THIS }, // この
-                { "True", TokenType.TRUE }, // 肯
-                { "var", TokenType.VAR }, // は
-                { "while", TokenType.WHILE } // 間
+                { "or", TokenType.OR }, // または
+                { "print", TokenType.PRINT }, // 表示
+                { "return", TokenType.RETURN }, // 返し
+                { "True", TokenType.TRUE }, // 真
+                { "var", TokenType.VAR }, // 変数
+                { "while", TokenType.WHILE } // これが真の間
             };
         }
 
@@ -84,7 +81,7 @@ namespace SuironInterpreter
                 case '*': addToken(TokenType.STAR); break;
                 case '&': addToken(TokenType.AMPERSAND); break;
 
-                case 'は': addToken(TokenType.BANG); break;
+                // case 'は': addToken(TokenType.BANG); break;
 
                 case '!': addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break; // if !, and if = then "!=" else "!"
                 case '=': addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
