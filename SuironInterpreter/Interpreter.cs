@@ -73,6 +73,7 @@ namespace SuironInterpreter
             {
                 return $"{@object}";
             }
+
             
             return @object.ToString();
         }

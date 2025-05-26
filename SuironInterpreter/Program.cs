@@ -28,7 +28,7 @@ namespace SuironInterpreter
             }
             else
             {
-                Console.WriteLine("Entering interactive prompt...");
+                Console.WriteLine("Entering interactive prompt...\nType valid Suiron code to run it with the interpreter.");
                 runPrompt();
             }
         }
