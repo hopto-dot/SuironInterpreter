@@ -284,7 +284,7 @@ namespace SuironInterpreter
         // factor     := unary ( ( "/" | "*" ) unary )* ;
         // unary      := ( "!" | "-" ) unary
         //               | primary ;
-        // primary    := NUMBER | STRING | "true" | "false" | "nil"
+        // primary    := NUMBER | STRING | "true" | "false" | "null"
         //               | "(" expression ")" ;
         #endregion
         private Expr expression()

@@ -106,16 +106,14 @@ namespace SuironInterpreter
         {
             if (arguments[0] == null)
             {
-                return false; // or throw an error, depending on desired behavior for nil
+                return false;
             }
 
             if (arguments[0] is double number)
             {
-                // A double is an integer if it has no fractional part.
-                // Comparing with its floored value is a reliable way to check this.
                 return number == Math.Floor(number);
             }
-            // If it's not a double, it's definitely not an integer in the context of Suiron's number type
+            // If it's not a double, it's definitely not an integer
             return false;
         }
 
@@ -136,9 +134,7 @@ namespace SuironInterpreter
         {
             if (arguments[0] == null)
             {
-                // Decide how to handle nil: throw error or return nil/0?
-                // Throwing an error is often safer for math functions.
-                throw new RuntimeErrorException(null, "Cannot call floor on nil.");
+                throw new RuntimeErrorException(null, "Cannot call floor on null.");
             }
 
             if (arguments[0] is double number)
@@ -146,7 +142,6 @@ namespace SuironInterpreter
                 return Math.Floor(number);
             }
 
-            // If not a double, it's an invalid type for floor
             throw new RuntimeErrorException(null, $"Operand for floor must be a number. Got {arguments[0].GetType()}.");
         }
 
@@ -167,7 +162,7 @@ namespace SuironInterpreter
         {
             if (arguments[0] == null)
             {
-                throw new RuntimeErrorException(null, "Cannot call toInt on nil.");
+                throw new RuntimeErrorException(null, "Cannot call toInt on null.");
             }
 
             if (arguments[0] is string strValue)
@@ -177,7 +172,7 @@ namespace SuironInterpreter
                     // Check if the parsed double has no fractional part
                     if (numberValue == Math.Floor(numberValue))
                     {
-                        return numberValue; // Return the double
+                        return numberValue; // return double
                     }
                     else
                     {
@@ -212,7 +207,7 @@ namespace SuironInterpreter
         {
             if (arguments[0] == null)
             {
-                throw new RuntimeErrorException(null, "Argument to wait() cannot be nil.");
+                throw new RuntimeErrorException(null, "Argument to wait() cannot be null.");
             }
 
             if (arguments[0] is double seconds)
@@ -261,7 +256,7 @@ namespace SuironInterpreter
         {
             if (arguments[0] == null)
             {
-                throw new RuntimeErrorException(null, "Cannot get length of nil.");
+                throw new RuntimeErrorException(null, "Cannot get length of null.");
             }
 
             if (arguments[0] is string str)
@@ -291,14 +286,13 @@ namespace SuironInterpreter
         {
             if (arguments[0] == null)
             {
-                throw new RuntimeErrorException(null, "File path cannot be nil for readFile.");
+                throw new RuntimeErrorException(null, "File path cannot be null for readFile.");
             }
 
             if (arguments[0] is string filePath)
             {
                 try
                 {
-                    // Use File.ReadAllText to read the entire file
                     return File.ReadAllText(filePath);
                 }
                 catch (FileNotFoundException)
@@ -328,13 +322,11 @@ namespace SuironInterpreter
 
     public class WriteFileFunction : SuironCallable
     {
-        // Arity can be 2 or 3 because of the optional argument
         public int Arity()
         {
             return 2; // Minimum arguments: filepath, content
         }
 
-        // You'll need to override the call method to handle variable arguments
         public object call(Interpreter interpreter, List<object> arguments)
         {
             // Basic argument count validation
@@ -345,12 +337,12 @@ namespace SuironInterpreter
 
             if (arguments[0] == null || !(arguments[0] is string filePath))
             {
-                throw new RuntimeErrorException(null, "First argument to writeFile (file path) must be a string and not nil.");
+                throw new RuntimeErrorException(null, "First argument to writeFile (file path) must be a string and not null.");
             }
 
             if (arguments[1] == null || !(arguments[1] is string content))
             {
-                throw new RuntimeErrorException(null, "Second argument to writeFile (content) must be a string and not nil.");
+                throw new RuntimeErrorException(null, "Second argument to writeFile (content) must be a string and not null.");
             }
 
             bool append = false; // Default value for append
@@ -359,7 +351,7 @@ namespace SuironInterpreter
             {
                 if (arguments[2] == null)
                 {
-                    // If nil is passed for append, treat as false (or throw error if strict)
+                    // if nul is passed for append, treat as false (or throw error if strict)
                     append = false;
                 }
                 else if (arguments[2] is bool boolAppend)
@@ -382,7 +374,7 @@ namespace SuironInterpreter
                 {
                     File.WriteAllText(filePath, content);
                 }
-                return null; // Suiron functions typically return nil if no explicit value is returned
+                return null; // Suiron functions typically return null  if no explicit value is returned
             }
             catch (IOException ex)
             {
@@ -405,12 +397,11 @@ namespace SuironInterpreter
         // Arity can be 1 or 2
         public int Arity()
         {
-            return 1; // Minimum arguments: command string
+            return 1; // Minimum arguments
         }
 
         public object call(Interpreter interpreter, List<object> arguments)
         {
-            // Basic argument count validation
             if (arguments.Count < 1 || arguments.Count > 2)
             {
                 throw new RuntimeErrorException(null, $"executeCommand() expects 1 or 2 arguments, but got {arguments.Count}.");
@@ -418,16 +409,16 @@ namespace SuironInterpreter
 
             if (arguments[0] == null || !(arguments[0] is string command))
             {
-                throw new RuntimeErrorException(null, "First argument to executeCommand (command string) must be a string and not nil.");
+                throw new RuntimeErrorException(null, "First argument to executeCommand (command string) must be a string and not null.");
             }
 
-            bool printOutput = false; // Default value for printOutput
+            bool printOutput = false; // Default value
 
             if (arguments.Count == 2)
             {
                 if (arguments[1] == null)
                 {
-                    // If nil is passed for printOutput, treat as false
+                    // If null is passed for printOutput, treat as false
                     printOutput = false;
                 }
                 else if (arguments[1] is bool boolPrintOutput)
@@ -455,7 +446,7 @@ namespace SuironInterpreter
                     string output = process.StandardOutput.ReadToEnd();
                     string error = process.StandardError.ReadToEnd();
 
-                    process.WaitForExit(); // Wait for the command to finish
+                    process.WaitForExit(); // wait for the command to finish
 
                     if (printOutput && !string.IsNullOrWhiteSpace(output))
                     {
@@ -466,11 +457,11 @@ namespace SuironInterpreter
                         Console.Error.WriteLine(error);
                     }
 
-                    // Return the standard output as a string (or nil if empty)
+                    // return the std output as a string (or null if empty)
                     return string.IsNullOrEmpty(output) ? null : output;
                 }
             }
-            catch (Exception ex) // Catch general exceptions during process execution
+            catch (Exception ex)
             {
                 throw new RuntimeErrorException(null, $"Error executing command '{command}': {ex.Message}");
             }
@@ -500,7 +491,7 @@ namespace SuironInterpreter
         {
             if (arguments[0] == null || arguments[1] == null)
             {
-                throw new RuntimeErrorException(null, "Arguments to random() cannot be nil.");
+                throw new RuntimeErrorException(null, "Arguments to random() cannot be null.");
             }
 
             if (!(arguments[0] is double minDouble) || !IsInteger(minDouble))
@@ -520,8 +511,7 @@ namespace SuironInterpreter
                 throw new RuntimeErrorException(null, "Min argument to random() cannot be greater than max argument.");
             }
 
-            // _random.Next(minValue, maxValue) generates a random integer that is greater than or equal to minValue,
-            // and less than maxValue. So we need to add 1 to max.
+            // _random.Next(minValue, maxValue) generates a random integer that is greater than or equal to minValue and less than maxValue. so need t add 1 to max
             return (double)_random.Next(min, max + 1);
         }
 
@@ -542,7 +532,7 @@ namespace SuironInterpreter
         {
             if (arguments[0] == null)
             {
-                throw new RuntimeErrorException(null, "File path argument to fileExists() cannot be nil.");
+                throw new RuntimeErrorException(null, "File path argument to fileExists() cannot be null.");
             }
 
             if (!(arguments[0] is string filePath))
@@ -554,7 +544,7 @@ namespace SuironInterpreter
             {
                 return File.Exists(filePath);
             }
-            catch (Exception ex) // Catch potential exceptions from File.Exists, though rare
+            catch (Exception ex)
             {
                 throw new RuntimeErrorException(null, $"Error checking file existence for '{filePath}': {ex.Message}");
             }
@@ -577,7 +567,7 @@ namespace SuironInterpreter
         {
             if (arguments[0] == null)
             {
-                throw new RuntimeErrorException(null, "Argument to toLower() cannot be nil.");
+                throw new RuntimeErrorException(null, "Argument to toLower() cannot be null.");
             }
 
             if (!(arguments[0] is string str))
@@ -585,7 +575,7 @@ namespace SuironInterpreter
                 throw new RuntimeErrorException(null, "Argument to toLower() must be a string.");
             }
 
-            return str.ToLowerInvariant(); // Using ToLowerInvariant for consistency
+            return str.ToLowerInvariant();
         }
 
         public override string ToString()
@@ -605,7 +595,7 @@ namespace SuironInterpreter
         {
             if (arguments[0] == null || arguments[1] == null || arguments[2] == null)
             {
-                throw new RuntimeErrorException(null, "Arguments to replace() cannot be nil.");
+                throw new RuntimeErrorException(null, "Arguments to replace() cannot be null.");
             }
 
             if (!(arguments[0] is string inputString))
