@@ -17,22 +17,21 @@ namespace SuironInterpreter
 
         static Scanner()
         {
-            // define what strings correspond to what token types
             keywords = new Dictionary<string, TokenType>
             {
-                { "and", TokenType.AND }, // そして
-                { "else", TokenType.ELSE }, // 違えば
-                { "False", TokenType.FALSE }, // 偽
-                { "for", TokenType.FOR }, // 繰り返し
-                { "function", TokenType.FUN }, // 関数
-                { "if", TokenType.IF }, // もし
-                { "nil", TokenType.NIL }, // 無
-                { "or", TokenType.OR }, // または
-                { "print", TokenType.PRINT }, // 表示
-                { "return", TokenType.RETURN }, // 返し
-                { "True", TokenType.TRUE }, // 真
-                { "var", TokenType.VAR }, // 変数
-                { "while", TokenType.WHILE } // これが真の間
+                { "そして", TokenType.AND },     // "and"
+                { "違えば", TokenType.ELSE },    // "else"
+                { "偽", TokenType.FALSE },       // "False"
+                { "繰り返し", TokenType.FOR },   // "for"
+                { "関数", TokenType.FUN },       // "function"
+                { "もし", TokenType.IF },        // "if"
+                { "無", TokenType.NIL },         // "nil"
+                { "または", TokenType.OR },      // "or"
+                { "表示", TokenType.PRINT },     // "print"
+                { "返し", TokenType.RETURN },    // "return"
+                { "真", TokenType.TRUE },        // "True"
+                { "変数", TokenType.VAR },       // "var"
+                { "間", TokenType.WHILE }  // "while" (using phonetic "howairu")
             };
         }
 
@@ -224,20 +223,17 @@ namespace SuironInterpreter
         }
         private bool isAlpha(char c)
         {
-            return (c >= 'a' && c <= 'z') ||
-                   (c >= 'A' && c <= 'Z') ||
-                    c == '_';
+            //return (c >= 'a' && c <= 'z') ||
+            //       (c >= 'A' && c <= 'Z') ||
+            //        c == '_';
+
+            return char.IsLetter(c) || c == '_';
         }
 
-        private bool isJP(char c)
-        {
-            List<string> allowedCharacters = new List<string> { "真", "偽" };
-            return allowedCharacters.Contains(c.ToString());
-        }
 
         private bool isAlphaNumeric(char c)
         {
-            return isAlpha(c) || isDigit(c);
+            return char.IsLetterOrDigit(c) || c == '_';
         }
 
         private void scanIdentifier()
