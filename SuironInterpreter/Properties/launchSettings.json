@@ -1,7 +1,8 @@
 {
   "profiles": {
     "SuironInterpreter": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "file5.suiron"
     }
   }
 }

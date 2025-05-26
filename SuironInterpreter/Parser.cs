@@ -131,6 +131,10 @@ namespace SuironInterpreter
             {
                 return printStatement();
             }
+            if (match(TokenType.RETURN))
+            {
+                return returnStatement();
+            }
             if (match(TokenType.WHILE))
             {
                 return whileStatement();
@@ -238,6 +242,19 @@ namespace SuironInterpreter
             consume(TokenType.SEMICOLON, "Expected ';' at the end of the line.");
             return new Stmt.Print(value);
         }
+        private Stmt returnStatement()
+        {
+            Token keyword = previous();
+            Expr value = null;
+            if (!check(TokenType.SEMICOLON))
+            {
+                value = expression();
+            }
+
+            consume(TokenType.SEMICOLON, "';' is expected after the return value.");
+            return new Stmt.Return(keyword, value);
+        }
+
         private Stmt expressionStatement()
         {
             Expr expr = expression();

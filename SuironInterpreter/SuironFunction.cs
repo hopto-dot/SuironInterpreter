@@ -33,7 +33,15 @@ namespace SuironInterpreter
                 environment.define(declaration.Params[i].Lexeme, arguments[i]);
             }
 
-            interpreter.executeBlock(declaration.Body, environment);
+            try
+            {
+                interpreter.executeBlock(declaration.Body, environment);
+            }
+            catch (Return returnValue)
+            {
+                return returnValue.Value;
+            }
+            
             return null;
         }
 

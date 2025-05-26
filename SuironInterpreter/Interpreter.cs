@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static SuironInterpreter.Stmt;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Object = System.Object;
 
@@ -18,12 +19,13 @@ namespace SuironInterpreter
         public Interpreter()
         {
             this.globals.define("clock", new ClockFunction());
-
             this.globals.define("input", new UserInputFunction());
-
             this.globals.define("substring", new SubstringFunction());
+            this.globals.define("floor", new FloorFunction());
+            this.globals.define("isInt", new IsIntFunction());
+            this.globals.define("toInt", new ToIntFunction());
 
-            this.environment = this.globals; // make sure this line goes after all definitions in global environment
+            this.environment = this.globals;
         }
         
         public void interpret(List<Stmt> statements)
@@ -219,6 +221,14 @@ namespace SuironInterpreter
             return null;
         }
 
+        public Object? VisitReturnStmt(Stmt.Return stmt)
+        {
+            Object value = null;
+            if (stmt.Value != null) value = evaluate(stmt.Value);
+
+            throw new Return(value);
+        }
+
         public Object VisitLiteralExpr(Expr.Literal expr)
         {
             return expr.Value;
@@ -276,11 +286,20 @@ namespace SuironInterpreter
                     checkNumberOperands(expr.Operator, left, right);
                     return (double)left - (double)right;
                 case TokenType.PLUS:
+                    //checkNumberOperands(expr.Operator, left, right);
+                    //if (left is double && right is Double)
+                    //{
+                    //    return (double)left + (double)right;
+                    //}
+
                     checkNumberOperands(expr.Operator, left, right);
-                    if (left is double && right is Double)
-                    {
-                        return (double)left + (double)right;
-                    }
+
+                    // Convert operands to doubles if they're strings
+                    double leftValue = left is double ? (double)left : Double.Parse((string)left);
+                    double rightValue = right is double ? (double)right : Double.Parse((string)right);
+
+                    return leftValue + rightValue;
+
 
                     throw new RuntimeErrorException(expr.Operator, $"Operands must be numbers. If you are trying to concatenate strings use '&'.");
                 case TokenType.AMPERSAND: // & should be used for concat instead of +
@@ -322,9 +341,17 @@ namespace SuironInterpreter
             if (operand is Double) return;
             throw new RuntimeErrorException(@operator, $"Operand cannot be '{@operator}'. Must be a number.");
         }
-        private void checkNumberOperands(Token @operator, Object left, Object right)
+        private bool checkNumberOperands(Token @operator, Object left, Object right)
         {
-            if (left is Double && right is Double) return;
+            if (left is Double && right is Double) return true;
+
+            if (left is string leftStr && right is string rightStr)
+            {
+                if (Double.TryParse(leftStr, out _) && Double.TryParse(rightStr, out _))
+                {
+                    return true;
+                }
+            }
 
             throw new RuntimeErrorException(@operator, $"Operands must be numbers.");
         }
