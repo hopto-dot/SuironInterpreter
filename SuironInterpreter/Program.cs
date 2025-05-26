@@ -63,10 +63,6 @@ namespace SuironInterpreter
                 return;
             }
 
-            //Console.ForegroundColor = ConsoleColor.Blue;
-            //Console.WriteLine($"Evaluating '{printer.Print(expression)}'");
-            //Console.ForegroundColor = ConsoleColor.White;
-
             interpreter.interpret(statements);
 
             // object value = interpreter.evaluate(expression);
