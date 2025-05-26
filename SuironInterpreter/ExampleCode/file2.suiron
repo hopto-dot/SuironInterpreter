@@ -1,0 +1,34 @@
+// This program showcases the following:
+// Functions, While loops, If-Else statements, string manipulation & built-in functions.
+// input() for user input, and substring() and len() for string manipulation
+// the program then checks if your name is a palindrome
+
+表示 "Let's reverse your name.";                          // print "Let's reverse your name.";
+
+関数 reverseString(str) {                                 // function reverseString(str) - reverses a given string
+    変数 reversed = "";                                   // variable reversed = "";
+    変数 i = len(str) - 1;                                // variable i = str.length() - 1; (start from end)
+    間 (i >= 0) {                                        // while (i >= 0)
+        reversed = reversed & substring(str, i, 1);      // reversed = reversed + substring(str, i, 1); (concatenate char)
+        i = i - 1;                                       // i = i - 1;
+    }
+    返し reversed;                                        // return reversed;
+}
+
+関数 isPalindrome(str) {                                // function isPalindrome(str) - checks if a string is a palindrome
+    変数 reversed = reverseString(str);                 // variable reversed = reverseString(str);
+    返し str == reversed;                                // return str == reversed;
+}
+
+表示 "";                                               // print "";
+変数 userName = input("Please enter your name: ");     // variable userName = input("Please enter your name: ");
+
+変数 reversedName = reverseString(userName);           // variable reversedName = reverseString(userName);
+表示 "Your name backwards is: " & reversedName;        // print "Your name backwards is: " & reversedName;
+表示 "";
+
+もし (isPalindrome(userName)) {                         // if (isPalindrome(userName))
+    表示 "Your name IS a palindrome!";                 // print "Your name IS a palindrome!";
+} 違えば {                                              // else
+    表示 "Your name IS NOT a palindrome.";             // print "Your name IS NOT a palindrome.";
+}

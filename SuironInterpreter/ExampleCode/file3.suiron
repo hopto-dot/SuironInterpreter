@@ -1,0 +1,76 @@
+// Quiz gaming showcasing nested while loops and nested if, else-if and else blocks
+
+// Declare variables
+変数 score = 0;
+変数 maxAttempts = 2;
+変数 questionNumber = 1;
+
+// Outer loop: Iterate through questions
+間 (questionNumber <= 2) { // Let's have 2 questions for this demo
+
+    変数 attemptsLeft = maxAttempts; // Reset attempts for each new question
+    変数 answeredCorrectly = 偽; // (False)
+
+    表示 " -- Question " & questionNumber & " -- ";
+
+    // Inner loop: Handle attempts for the current question
+    間 (attemptsLeft > 0 そして !answeredCorrectly) { // (while attemptsLeft > 0 AND NOT answeredCorrectly)
+
+        表示 "  Attempts left: " & attemptsLeft;
+
+        // Nested If-Else-If for questions and checking answers
+        もし (questionNumber == 1) {
+            表示 "  What is 2 + 2?";
+            表示 "  (Enter a number)";
+            変数 input = input("");
+            変数 userAnswer = toInt(input); // Convert user input to integer
+
+            もし (userAnswer == 4) { // if
+                表示 "    Correct! You get a point!";
+                score = score + 1;
+                answeredCorrectly = 真;
+            } 違えば もし (userAnswer == 3) { // else if
+                表示 "    Close! But not quite right.";
+            } 違えば { // else
+                表示 "    Incorrect answer.";
+            }
+        } 
+        違えば もし (questionNumber == 2) { // else if
+            表示 "  Which planet is known as the Red Planet?";
+            表示 "  (Enter a string: Earth, Mars, Jupiter)";
+            変数 userAnswer = input(""); // Get user input as a string
+
+            もし (userAnswer == "Mars") { // if 
+                表示 "    Yes! Mars is correct.";
+                score = score + 1;
+                answeredCorrectly = 真;
+            } 違えば もし (userAnswer == "Earth") { // else if
+                表示 "    That's our home silly!";
+            } 違えば もし (userAnswer == "Jupiter") { // else if
+                表示 "    Jupiter is a gas giant, not red.";
+            } 違えば { // else
+                表示 "    That's not one of the options or is incorrect.";
+            }
+        } 
+        
+
+        // Decrease attempts left by one if answered incorrectly
+        もし (!answeredCorrectly) {
+            attemptsLeft = attemptsLeft - 1;
+            もし (attemptsLeft == 0) {
+                表示 "    You ran out of attempts for this question.";
+            }
+        }
+        表示 ""; // print newline
+    }
+
+    // Move to the next question
+    questionNumber = questionNumber + 1;
+}
+
+// Final score display
+表示 " -- Quiz End --";
+wait(4);
+表示 "Your final score is: " & score & " out of 2.";
+wait(2);
+表示 "Thank you for playing!";

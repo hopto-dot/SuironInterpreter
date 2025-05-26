@@ -1,0 +1,53 @@
+// Program to find the Nth prime number and measure calculation time
+// Note: my programming language doesn't support % (mod) operator so I use the other operators, as well as a built-in floor() function.
+// This sample code showcases the clock() function which can be used to get the current unix time - and therefore time the interpretting of certain code.
+
+表示 "This program calculates prime numbers up to an Nth prime number.";
+変数 userInput = input("What value of N should we stop calculating prime numbers at?: "); // recommended: 1000 to 4000
+変数 highestPrimeNumberToCalculate = toInt(userInput);
+
+関数 isPrime(num) {                                       // function isPrime(num) - checks if a number is prime
+    もし (num < 2) 返し 偽;                               // if (num < 2) return false;
+    
+    変数 i = 2;                                           // variable i = 2;
+    間 (i * i <= num) {                                   // while (i * i <= num) - check divisors up to sqrt
+        変数 quotient = num / i;                          // variable quotient = num / i;
+        もし (quotient == floor(quotient)) {              // Check if quotient is a whole number
+            返し 偽;                                      // return false - number is divisible by i
+        }
+        i = i + 1;                                        // i = i + 1;
+    }
+    返し 真;                                               // return true
+}
+
+
+関数 nthPrime(n) {                                        // function nthPrime(n) - finds the Nth prime number
+    変数 count = 0;                                       // variable count = 0 - count of primes found
+    変数 candidate = 2;                                   // variable candidate = 2 - current number to test
+    
+    間 (count < n) {                                      // while (count < n) - until we find N primes
+        もし (isPrime(candidate)) {                       // if (isPrime(candidate))
+            count = count + 1;                            // count = count + 1;
+            もし (count == n) {                           // if (count == n) - found the Nth prime
+                返し candidate;                           // return candidate;
+            }
+        }
+        candidate = candidate + 1;                        // candidate = candidate + 1;
+    }
+}
+
+表示 "";
+表示 "Finding the prime numbers up to N=" & highestPrimeNumberToCalculate & ":";
+
+変数 i = 100;                                              // variable i = 1 - loop counter
+間 (i <= highestPrimeNumberToCalculate) {                  // while (i <= 10) - loop from 1 to 10
+    変数 startTime = clock();                                  // variable startTime = clock() - record start time
+    変数 primeResult = nthPrime(i);                            // variable primeResult = nthPrime(i) - calculate Nth prime
+    変数 endTime = clock();                                    // variable endTime = clock() - record end time
+    変数 duration = endTime - startTime;                       // variable duration = endTime - startTime;
+    
+    表示 "Prime number " & i & " is " & primeResult &          // print calculation info
+          " (calculated in " & duration & " seconds)";    
+    
+    i = i + 100;                                               // i = i + 1;
+}

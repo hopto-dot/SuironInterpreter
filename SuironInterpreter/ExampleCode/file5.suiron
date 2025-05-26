@@ -1,0 +1,89 @@
+// Program to fetch a random anime quote using an API and display it. Also, shows your IP address at the end.
+// Both things are done by executing code in the command prompt, and then doing string manipulation on the output.
+
+関数 indexOf(text, pattern, searchFromIndex) {
+    // Helper function: 
+    // find the first occurrence of a pattern in a text starting the search from searchFromIndex
+    // Returns the starting index of the pattern in text or -1 if not found
+
+    変数 textLen = len(text);
+    変数 patternLen = len(pattern);
+
+    もし (patternLen == 0) {
+        返し searchFromIndex;
+    }
+    もし (searchFromIndex < 0) {
+        searchFromIndex = 0;
+    }
+    
+    もし (searchFromIndex >= textLen または patternLen > textLen - searchFromIndex) { // if pattern is longer than text remaining from searchFromIndex, it can't be found
+        返し -1;
+    }
+
+    変数 i = searchFromIndex;
+    // loop until 'i' allows the full pattern to fit within the remaining text
+    間 (i <= textLen - patternLen) {
+        変数 currentSlice = substring(text, i, patternLen);
+        もし (currentSlice == pattern) {
+            返し i; // return index
+        }
+        i = i + 1;
+    }
+    返し -1; // return `-1`, meaning not found
+}
+
+表示 "Fetching a random anime quote, please wait...";
+
+変数 apiUrl = "https://api.animechan.io/v1/quotes/random";
+変数 curlCommand = "curl " & apiUrl;
+変数 apiResponse = executeCommand(curlCommand, 偽);
+
+もし (apiResponse == 無) { // if command fail (therefore response is null)
+    表示 "Error. failed to get a response from the API :(";
+    表示 "Exiting...";
+    返し; // panic! exit!
+}
+違えば もし (len(apiResponse) == 0) {
+    表示 "API response was empty. Exiting...";
+    返し; // panic! exit!
+}
+
+
+変数 startMarker = "\"content\":\"";
+変数 endMarker = "\",\"anime\":";
+
+// find starting position of the actual quote content (after the startMarker)
+変数 startMarkerPos = indexOf(apiResponse, startMarker, 0);
+
+もし (startMarkerPos == -1) {
+    表示 "Could not find the start of the quote in the API response.";
+    //表示 "Full response: " & apiResponse; // for debugging
+    返し; // panic! exit!
+}
+
+変数 quoteActualStart = startMarkerPos + len(startMarker);
+
+変数 endMarkerPos = indexOf(apiResponse, endMarker, quoteActualStart);
+
+もし (endMarkerPos == -1) {
+    表示 "Could not find the end of the quote in the API response.";
+    //表示 "Full response: " & substring(apiResponse, quoteActualStart, len(apiResponse) - quoteActualStart); // for debugging
+    返し; // panic! exit!
+}
+
+変数 quoteLength = endMarkerPos - quoteActualStart;
+
+もし (quoteLength < 0) {
+    表示 "Calculated quote length is negative. Start and end markers were in an unexpected order";
+    返し;
+}
+
+変数 extractedQuote = substring(apiResponse, quoteActualStart, quoteLength); // extract quote
+
+表示 "";
+表示 "Random Anime Quote:";
+表示 extractedQuote;
+
+変数 ipAddress = executeCommand("curl api.ipify.org");
+
+表示 "\nThe request to fetch the anime quote was made from your IP address of: " & ipAddress;

@@ -1,0 +1,40 @@
+// Stage 1 examples:
+表示 " -- Stage 1 -- ";
+
+変数 num1 = 1.25;                   // variable num1 = 1.25
+変数 num2 = 2.5 + 2.5 - num1;       // variable 2.5 + 2.5 - num1
+表示 num2;                          // print num2
+
+変数 num3 = 8.5 / (2 * 9) - -num2;  // variable num3 = 8.5 / (2 * 9) - -num2
+表示 num3;                          // print num3
+表示 (10 * 2) / 6;                  // print (10 * 2) / 6
+
+表示 "";                            // print newline
+
+
+
+// Stage 2 examples:
+表示 " -- Stage 2 -- ";
+
+表示 偽 そして 真;                  // print False and True
+表示 偽 または 真;                  // print False or True
+表示 (0 < 1) または 偽;             // print (0 < 1) or False
+表示 !(5 - 4 > 3 * 2 == !偽);       // print !(5 - 4 > 3 * 2 == !False)
+表示 "";                            // print newline
+
+
+// Stage 3 Examples:
+表示 " -- Stage 3 -- ";
+
+表示 "hello" & " " & "world!";              // print "hello" & " " & "world!"
+表示 "This message is\nOn two lines!";      // print "This message is\nOn two lines!"       <- supports escape characters
+表示 "foo" & "bar" == "foobar";             // print "foo" + "bar" == "foobar"
+表示 "10 corgis" != "10" & "corgis";        // print "10 corgis" != "10" & "corgis"
+表示 "";                                    // print newline
+
+// Extra Examples:
+表示 " -- Stage 3 -- ";
+表示 "1" & "2";     // result: 12           // print "1" & "2"
+表示 "1" + "2";     // result: 3            // print "1" + "2"
+表示 2 そして 偽;    // result: False          // print 1 and False
+表示 1 そして 偽;    // result: True          // print 1 and False          <- 1 evaluates to true
