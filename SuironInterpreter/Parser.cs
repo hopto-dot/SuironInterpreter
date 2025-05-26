@@ -215,9 +215,20 @@ namespace SuironInterpreter
 
             Stmt thenBranch = statement();
             Stmt elseBranch = null;
-            if (match(TokenType.ELSE))
+            if (match(TokenType.ELSE)) // If we encounter '違えば' (ELSE)
             {
-                elseBranch = statement();
+                // NOW, check if the token after '違えば' is 'もし' (IF)
+                if (match(TokenType.IF)) // If it's '違えば もし' (ELSE IF)
+                {
+                    // If it's an "else if", then the 'else' branch is itself another 'if' statement.
+                    // We recursively call ifStatement() to parse this nested 'if'.
+                    elseBranch = ifStatement();
+                }
+                else
+                {
+                    // Otherwise, it's a regular '違えば' (ELSE) without an 'もし' (IF)
+                    elseBranch = statement(); // Parse the regular 'else' branch
+                }
             }
 
             return new Stmt.If(condition, thenBranch, elseBranch);

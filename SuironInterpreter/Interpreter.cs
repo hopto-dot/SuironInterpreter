@@ -26,6 +26,16 @@ namespace SuironInterpreter
             this.globals.define("toInt", new ToIntFunction());
             this.globals.define("wait", new WaitFunction());
 
+            this.globals.define("len", new LenFunction());
+            this.globals.define("readFile", new ReadFileFunction());
+            this.globals.define("writeFile", new WriteFileFunction());
+            this.globals.define("executeCommand", new ExecuteCommandFunction());
+
+            this.globals.define("random", new RandomFunction());
+            this.globals.define("fileExists", new FileExistsFunction());
+            this.globals.define("toLower", new ToLowerFunction());
+            this.globals.define("replace", new ReplaceFunction());
+
             this.environment = this.globals;
         }
         
@@ -115,7 +125,14 @@ namespace SuironInterpreter
 
             if (arguments.Count != function.Arity())
             {
-                throw new RuntimeErrorException(expr.Paren, $"Expected {function.Arity()} arguments but got {arguments.Count}.");
+                if (callee is ExecuteCommandFunction && arguments.Count == 2)
+                {
+                    return function.call(this, arguments);
+                }
+                else
+                {
+                    throw new RuntimeErrorException(expr.Paren, $"Expected {function.Arity()} arguments but got {arguments.Count}.");
+                }
             }
 
             return function.call(this, arguments);
@@ -145,7 +162,7 @@ namespace SuironInterpreter
             {
                 if (!isTruthy(left))
                 {
-                    return left;
+                    return false; // return left
                 }
             }
 
@@ -268,6 +285,10 @@ namespace SuironInterpreter
         {
             if (@object == null) return false;
             if (@object is bool) return (bool)@object;
+            if (@object is double)
+            {
+                return (double)@object == 1;
+            }
             return true;
         }
         public Object VisitBinaryExpr(Expr.Binary expr)
@@ -378,7 +399,7 @@ namespace SuironInterpreter
 
         private bool isEqual(Object a, Object b)
         {
-            if (a == null || b == null) return true;
+            if (a == null && b == null) return true;
             if (a == null) return false;
             if (b == null) return false;    
 

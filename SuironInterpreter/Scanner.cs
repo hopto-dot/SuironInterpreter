@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SuironInterpreter
@@ -134,24 +135,95 @@ namespace SuironInterpreter
 
         }
 
-        private void scanString () {
-            while (peek() != '"' && !isAtEnd()) // keep peeking until reach another string or end of line
+        //private void scanString () {
+        //    while (peek() != '"' && !isAtEnd()) // keep peeking until reach another string or end of line
+        //    {
+        //        if (peek() == '\n') line++;
+        //        advance();
+        //    }
+
+        //    if (isAtEnd())
+        //    {
+        //        Program.error(line, "Unterminated string.");
+        //        return;
+        //    }
+
+        //    // The closing `"`
+        //    advance();
+
+        //    string value = source.Substring(start + 1, current - start - 2);
+        //    addToken(TokenType.STRING, value);
+        //}
+
+        private void scanString()
+        {
+            // Use a StringBuilder to construct the actual string value,
+            // handling escape sequences.
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while (peek() != '"' && !isAtEnd())
             {
-                if (peek() == '\n') line++;
-                advance();
+                char c = advance(); // Consume the current character
+
+                if (c == '\\') // Potential escape sequence
+                {
+                    if (isAtEnd())
+                    {
+                        // Error: backslash at the very end of the file or string without a character to escape
+                        Program.error(line, "Unterminated string with incomplete escape sequence.");
+                        return; // Stop processing this string
+                    }
+
+                    char escapedChar = advance(); // Consume the character after the backslash
+                    switch (escapedChar)
+                    {
+                        case '"':
+                            stringBuilder.Append('"'); // Add a literal double quote
+                            break;
+                        case '\\':
+                            stringBuilder.Append('\\'); // Add a literal backslash
+                            break;
+                        case 'n':
+                            stringBuilder.Append('\n'); // Add a newline character
+                            break;
+                        case 't':
+                            stringBuilder.Append('\t'); // Add a tab character
+                            break;
+                        default:
+                            // For unrecognized escape sequences, report an error and append the backslash and the character literally to allow the program to continue, but with a warning.
+                            Program.error(line, $"Unrecognized escape sequence '\\{escapedChar}'.");
+                            stringBuilder.Append('\\').Append(escapedChar);
+                            break;
+                    }
+                }
+                else if (c == '\n') // Unescaped newline within a string is an error
+                {
+                    // Report error for unterminated string (it implicitly terminates at the newline)
+                    Program.error(line, "Unterminated string.");
+                    line++; // Still advance the line counter
+                            // Do NOT append the unescaped newline to the string literal value.
+                            // The loop will break, and the string will be considered terminated.
+                    break; // Treat unescaped newline as string termination for error reporting
+                }
+                else
+                {
+                    // Regular character, just append it
+                    stringBuilder.Append(c);
+                }
             }
 
+            // Check if the string was properly terminated by a closing double quote
             if (isAtEnd())
             {
                 Program.error(line, "Unterminated string.");
                 return;
             }
 
-            // The closing `"`
+            // Consume the closing `"`
             advance();
 
-            string value = source.Substring(start + 1, current - start - 2);
-            addToken(TokenType.STRING, value);
+            // The actual string value is now in the StringBuilder
+            addToken(TokenType.STRING, stringBuilder.ToString());
         }
 
         private void scanNumber()
